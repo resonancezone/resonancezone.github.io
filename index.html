@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Зона резонанса</title>
+<meta name="description" content="Зона резонанса — стратегия в реальном времени в Зоне отчуждения. Три фракции, мутанты, артефакты и Выброс.">
+<link rel="icon" href="img/emblem_dolg.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=PT+Sans:wght@400;700&family=PT+Mono&display=swap" rel="stylesheet">
+<style>
+/* VOICE: тревожная сводка по рации, сухо и по делу
+   IDEA: сайт — продолжение игры: меню, КПК, брифинг, справочник сталкера
+   PICTURE: фото Зоны и кадры из игры, эмблемы, портреты мутантов, артефакты из сборки
+   COLOUR and TYPE: чёрный, золото логотипа, зелень КПК, цвета фракций; Russo One + PT Sans + PT Mono, как в игре
+   LAYOUT: первый экран, демо, фракции, Выброс, карта, кампания, армия, мутанты, артефакты, режимы и кадры, подвал
+   ФОТО меню (img/photo_*.webp) — из сборки, права не подтверждены: заменить, если понадобится */
+:root{color-scheme:dark;--bg:#0b0c0a;--bg2:#10120f;--panel:#151813;--panel2:#1b1f18;--line:rgba(212,172,28,.22);--gline:rgba(155,227,143,.22);
+--ink:#dcdccf;--soft:#b5b7a6;--hi:#f4f1e2;--mut:#8f927f;--gold:#d4ac1c;--gold2:#ecc94b;--pda:#9be38f;
+--red:#a8211f;--redt:#f0a49a;--grn:#4d9e38;--grnt:#a6dc95;--sand:#c7bd9e;--sandt:#e6dcbd;--warn:#ff8a6a;
+--hd:'Russo One',Impact,sans-serif;--mono:'PT Mono',ui-monospace,monospace}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 'PT Sans',system-ui,sans-serif;overflow-x:clip}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--gold2)}a:hover{color:var(--hi)}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
+.wrap{max-width:1220px;margin:0 auto}
+.band{padding:clamp(60px,8vw,110px) max(5vw,16px);position:relative}
+.alt{background:var(--bg2)}
+h2{margin:0;font:400 clamp(30px,4.2vw,50px)/1.08 var(--hd);color:var(--hi);text-wrap:balance}
+h3{margin:0;font-family:var(--hd);font-weight:400}
+.kick{display:flex;align-items:center;gap:10px;font:15px var(--mono);color:var(--pda);margin-bottom:14px}
+.kick::before{content:"";width:8px;height:8px;background:var(--pda);box-shadow:0 0 10px var(--pda)}
+.lead{max-width:680px;color:var(--soft);font-size:18px;margin:16px 0 0}
+.note{margin-top:16px;font:13px var(--mono);color:var(--mut)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;font:16px var(--hd);letter-spacing:.03em;border:none;cursor:pointer;text-decoration:none}
+.gold{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1a1500;box-shadow:0 0 0 1px #7a6210 inset,0 6px 24px rgba(212,172,28,.25)}
+.gold:hover{filter:brightness(1.08);color:#1a1500}
+.ghost{background:rgba(0,0,0,.35);color:var(--hi);border:1px solid rgba(236,201,75,.55)}.ghost:hover{background:rgba(236,201,75,.12);color:var(--hi)}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+/* header */
+header{position:sticky;top:0;z-index:30;background:rgba(11,12,10,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:10px 22px;padding:8px max(4vw,14px);flex-wrap:wrap}
+.hd .lg{display:flex;align-items:center;min-height:44px}.hd .lg img{height:36px;width:auto}
+nav.top{display:flex;flex-wrap:wrap;gap:0 20px}
+nav.top a{font:14px var(--mono);color:var(--soft);text-decoration:none;padding:12px 0}nav.top a:hover{color:var(--gold2)}
+.tools{display:flex;gap:8px}
+.tbtn{min-height:44px;min-width:44px;padding:0 12px;background:transparent;border:1px solid var(--line);color:var(--soft);font:13px var(--mono);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.tbtn:hover{color:var(--hi);border-color:var(--gold)}.tbtn b{color:var(--gold2)}
+.tbtn.on{color:var(--gold2);border-color:var(--gold)}
+.eq{display:inline-flex;gap:2px;align-items:flex-end;height:14px}.eq i{width:3px;background:currentColor;height:30%}
+.tbtn.on .eq i{animation:eq .9s ease-in-out infinite alternate}.tbtn.on .eq i:nth-child(2){animation-delay:.3s}.tbtn.on .eq i:nth-child(3){animation-delay:.6s}
+@keyframes eq{to{height:100%}}
+/* hero */
+.hero{position:relative;min-height:min(92vh,900px);display:flex;align-items:flex-end;overflow:hidden;padding:clamp(90px,12vw,140px) max(5vw,16px) clamp(36px,5vw,60px)}
+.hero .ph{position:absolute;inset:0;background:url(img/photo_bg3.webp) center 35%/cover no-repeat;filter:sepia(.35) contrast(1.05) brightness(.62);transform:scale(1.04);animation:drift 30s ease-in-out infinite alternate}
+@keyframes drift{to{transform:scale(1.12) translate(-1.5%,-1%)}}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(11,12,10,.55) 0%,rgba(11,12,10,.1) 35%,rgba(11,12,10,.75) 75%,var(--bg) 100%),radial-gradient(ellipse at 70% 40%,rgba(212,172,28,.14),transparent 60%)}
+.scan{position:absolute;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.035) 0 1px,transparent 1px 3px)}
+.hero .in{position:relative;z-index:2;width:100%;max-width:1220px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr);gap:32px;align-items:end}
+.hero .logo{width:min(620px,100%);filter:drop-shadow(0 6px 30px rgba(0,0,0,.8))}
+.hero h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.tag{font-size:clamp(18px,2.1vw,22px);max-width:600px;color:var(--hi);margin:22px 0 0;text-shadow:0 2px 10px #000}
+.facts{font:14px var(--mono);color:var(--soft);margin:12px 0 0}
+.ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
+.pda{position:relative;padding:20px 22px;background:rgba(8,14,9,.82);border:1px solid var(--gline);font-family:var(--mono);color:var(--pda);box-shadow:0 0 40px rgba(0,0,0,.6)}
+.pda i{position:absolute;width:20px;height:20px;border:2px solid var(--pda)}
+.pda i:nth-of-type(1){top:-1px;left:-1px;border-right:0;border-bottom:0}.pda i:nth-of-type(2){top:-1px;right:-1px;border-left:0;border-bottom:0}
+.pda i:nth-of-type(3){bottom:-1px;left:-1px;border-right:0;border-top:0}.pda i:nth-of-type(4){bottom:-1px;right:-1px;border-left:0;border-top:0}
+.pda .r{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:#7fae76;padding:6px 0;border-bottom:1px dashed var(--gline)}
+.pda .msg{font-size:15px;color:var(--pda);margin:12px 0;min-height:48px}
+.cdg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.cdg div{display:flex;flex-direction:column;align-items:center;padding:10px 4px;border:1px solid var(--gline);background:rgba(155,227,143,.05)}.cdg b{font:clamp(26px,3.4vw,38px)/1 var(--hd);color:var(--gold2);font-variant-numeric:tabular-nums}.cdg span{font-size:12px;color:#7fae76;margin-top:6px}
+.emit{width:100%;min-height:46px;margin-top:12px;display:flex;align-items:center;justify-content:center;text-decoration:none;background:transparent;border:1px solid rgba(236,201,75,.55);color:var(--gold2);font:14px var(--mono);cursor:pointer}.emit:hover{background:rgba(236,201,75,.12);color:var(--hi)}
+@keyframes flick{from{opacity:.84}to{opacity:1}}
+/* demo */
+.demo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:center}
+.demo .shot{position:relative;border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.demo .shot span{position:absolute;left:12px;top:12px;padding:5px 10px;background:var(--gold);color:#1a1500;font:13px var(--hd)}
+.dlist{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px}
+.dlist li{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--panel);border-left:3px solid var(--gold)}
+.dlist b{font:20px var(--hd);color:var(--gold2);min-width:34px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{padding:5px 10px;border:1px solid var(--line);font:13px var(--mono);color:var(--soft)}
+/* factions */
+.quote{margin:26px 0 0;font:clamp(20px,2.4vw,28px)/1.35 var(--hd);color:var(--hi);max-width:900px}
+.quote em{font-style:normal;color:var(--gold2)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:22px;margin-top:40px}
+.fc{position:relative;display:flex;flex-direction:column;background:var(--panel);border:1px solid rgba(255,255,255,.07);overflow:hidden}
+.fc .top{position:relative;height:210px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 60%,color-mix(in srgb,var(--c) 40%,transparent),transparent 70%),linear-gradient(180deg,#0e0f0d,#171a15)}
+.fc .top .em{width:150px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.7))}
+.fc .top .u{position:absolute;bottom:0;height:190px;width:auto;opacity:.92}
+.fc .top .u.l{left:6%}.fc .top .u.r{right:2%;height:150px}
+.fc .bd{padding:22px 24px 24px;display:flex;flex-direction:column;gap:12px;flex:1;border-top:3px solid var(--c)}
+.fc h3{font-size:28px;color:var(--t)}
+.fc .en{font:13px var(--mono);color:var(--mut)}
+.fc p{margin:0;color:var(--soft)}
+.perk{margin-top:auto;padding:12px 14px;background:rgba(0,0,0,.25);border:1px dashed color-mix(in srgb,var(--t) 50%,transparent);font:14px var(--mono);color:var(--t)}
+/* emission */
+.emgrid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;margin-top:40px;align-items:start}
+.cmp{position:relative;aspect-ratio:1920/744;overflow:hidden;border:1px solid rgba(255,138,106,.35);user-select:none;touch-action:pan-y}
+.cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cmp .top{clip-path:inset(0 0 0 var(--x,50%))}
+.cmp .bar{position:absolute;top:0;bottom:0;left:var(--x,50%);width:2px;background:#fff;box-shadow:0 0 12px #000;pointer-events:none}
+.cmp .bar::after{content:"⟷";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;display:grid;place-items:center;background:#fff;color:#000;border-radius:50%;font-size:20px}
+.cmp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.cmp .lb{position:absolute;bottom:10px;padding:5px 10px;font:13px var(--mono);background:rgba(0,0,0,.7)}
+.cmp .lb.a{left:10px;color:#e8d79a}.cmp .lb.b{right:10px;color:var(--warn)}
+.tl{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.tl li{padding:14px 16px;background:var(--panel);border-left:3px solid var(--warn)}
+.tl b{display:block;font:18px var(--hd);color:var(--hi);margin-bottom:2px}
+.tl span{color:var(--soft);font-size:16px}
+.after{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr);gap:20px;align-items:center;margin-top:22px}
+.after img{border:1px solid var(--line)}
+/* map */
+.mapgrid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;margin-top:40px}
+.map{position:relative;aspect-ratio:4/3;background:#0a0d09;border:1px solid var(--gline);overflow:hidden}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.pt{position:absolute;transform:translate(-22px,-22px);display:flex;align-items:center;gap:6px;min-height:44px;padding:0 4px 0 15px;background:none;border:0;cursor:pointer;color:#b4c9ae;font:13px var(--mono);white-space:nowrap;text-shadow:0 1px 3px #000}
+.pt::before{content:"";flex:none;width:10px;height:10px;border:2px solid var(--pda);background:#0a0d09}
+.pt.dm::before{border-color:var(--gold2)}
+.pt:hover{color:var(--hi)}.pt.sel{color:var(--hi);z-index:2}.pt.sel::before{width:14px;height:14px;background:var(--gold2);border:0;box-shadow:0 0 0 4px rgba(236,201,75,.3)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font:13px var(--mono);color:var(--mut)}
+.legend s{display:inline-block;width:10px;height:10px;border:2px solid var(--pda);margin-right:6px;vertical-align:-1px}.legend s.g{border-color:var(--gold2)}
+.side{display:flex;flex-direction:column;gap:14px;padding:22px;background:var(--panel);border:1px solid var(--gline)}
+.side .nm{font:30px var(--hd);color:var(--hi)}
+.side .pic{aspect-ratio:4/3;position:relative;background:#0b100b;border:1px solid var(--gline);overflow:hidden}
+.side .pic img{width:100%;height:100%;object-fit:cover;object-position:center}
+.side .pic .rad{position:absolute;inset:0;display:grid;place-items:center;font:13px var(--mono);color:var(--mut);text-align:center;padding:20px}
+.side .pic .dev{position:absolute;left:0;right:0;top:0;padding:14px;text-align:center;font:20px var(--hd);letter-spacing:.12em;color:var(--gold2);background:linear-gradient(rgba(0,0,0,.88),rgba(0,0,0,.55) 70%,transparent)}
+.side .pic .cap{position:absolute;left:0;right:0;bottom:0;padding:8px 10px;background:linear-gradient(transparent,rgba(0,0,0,.85));font:12px var(--mono);color:var(--soft)}
+.side p{margin:0;color:var(--soft);font-size:16px}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tg{padding:5px 10px;border:1px solid var(--gline);font:13px var(--mono);color:var(--grnt)}.tg.r{border-color:rgba(240,164,154,.5);color:var(--redt)}.tg.g{border-color:var(--gold);color:var(--gold2)}
+.loclist{display:none;flex-wrap:wrap;gap:8px;margin-top:12px}
+.loclist button{min-height:44px;padding:0 12px;background:transparent;border:1px solid var(--gline);color:var(--ink);font:13px var(--mono);cursor:pointer}
+.loclist button[aria-pressed=true]{background:var(--gold);color:#1a1500;border-color:var(--gold)}
+/* campaign */
+.camp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:26px;margin-top:40px;align-items:start}
+.dos{padding:24px;background:var(--panel);border-top:4px solid var(--red)}
+.dos .who{font:24px var(--hd);color:var(--redt);margin:6px 0 10px}
+.dos p{margin:0 0 12px;color:var(--soft)}
+.crew{font:13px/1.9 var(--mono);color:var(--mut)}
+.ms{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ms li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding:12px;background:var(--panel);border:1px solid rgba(255,255,255,.06)}
+.ms li img{width:96px;height:96px;object-fit:cover;border:1px solid var(--gline)}
+.ms .n{font:13px var(--mono);color:var(--pda)}.ms .t{font:20px var(--hd);color:var(--hi);margin:2px 0 4px}.ms p{margin:0;font-size:15px;color:var(--soft)}
+.ms li.lock{opacity:.75}.ms li.lock img{filter:grayscale(1) brightness(.5) blur(1.5px)}
+.ms li.lock .t::after{content:" · " attr(data-l);font:13px var(--mono);color:var(--gold2)}
+/* army */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:34px}
+.tabs button{min-height:44px;padding:0 18px;background:transparent;border:1px solid var(--line);color:var(--soft);font:15px var(--hd);cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--gold);color:#1a1500;border-color:var(--gold)}
+.units{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(165px,100%),1fr));gap:16px;margin-top:20px}
+.un{display:flex;flex-direction:column;background:var(--panel);border:1px solid rgba(255,255,255,.07)}
+.un .pic{height:170px;display:flex;align-items:flex-end;justify-content:center;padding:10px;background:radial-gradient(circle at 50% 70%,rgba(212,172,28,.13),transparent 65%),linear-gradient(#121410,#1a1d17)}
+.un .pic img{max-height:150px;width:auto;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(0,0,0,.6))}
+.un .bd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.un h3{font-size:19px;color:var(--hi)}
+.un p{margin:0;font-size:14.5px;color:var(--soft)}
+.cost{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:8px;font:13px var(--mono);color:var(--gold2)}
+.cost span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.cost img{width:18px;height:18px}.cost .a{color:#c9a6ff}
+/* mutants */
+.mut{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(148px,100%),1fr));gap:18px;margin-top:40px}
+.mu{position:relative;display:flex;flex-direction:column;background:linear-gradient(180deg,#141612,#10110e);border:1px solid rgba(180,160,220,.18);overflow:hidden}
+.mu .pic{height:220px;display:flex;align-items:center;justify-content:center;padding:14px;background:radial-gradient(circle at 50% 65%,rgba(140,120,200,.18),transparent 65%)}
+.mu .pic img{max-height:190px;width:auto;filter:drop-shadow(0 10px 14px rgba(0,0,0,.7)) contrast(1.1) brightness(1.15)}
+.mu .bd{padding:16px 18px 18px}
+.mu h3{font-size:22px;color:#d7cdf2}.mu .en{font:12px var(--mono);color:var(--mut)}
+.mu p{margin:8px 0 0;color:var(--soft);font-size:15px}
+/* artifacts */
+.arts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(150px,100%),1fr));gap:14px;margin-top:40px}
+.ar{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:18px 14px 16px;background:var(--panel);border:1px solid rgba(255,255,255,.06);transition:transform .2s,border-color .2s}
+.ar:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--ac) 60%,transparent)}
+.ar .glow{width:96px;height:96px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--ac) 45%,transparent),transparent 68%)}
+.ar img{width:78px;height:78px;object-fit:contain;animation:float 4s ease-in-out infinite alternate}
+.ar:nth-child(odd) img{animation-delay:-2s}
+@keyframes float{to{transform:translateY(-6px)}}
+.ar h3{font-size:18px;color:var(--hi)}
+.ar p{margin:0;font-size:14px;color:var(--soft)}
+.ar .src{font:12px var(--mono);color:var(--mut)}
+.ar .rare{position:absolute;top:8px;right:8px;padding:2px 7px;font:11px var(--mono);background:var(--gold);color:#1a1500}
+/* modes + gallery */
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr));gap:22px;margin-top:40px}
+.md{padding:26px;background:var(--panel);border:1px solid var(--line)}
+.md h3{font-size:24px;color:var(--gold2)}.md p{margin:10px 0;color:var(--soft)}
+.md ul{margin:0;padding-left:20px;font:14px/1.9 var(--mono);color:var(--soft)}
+.types{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:18px;margin-top:6px}
+.ty{position:relative;padding:22px 22px 20px;background:var(--panel2);border:1px solid var(--line);border-top:3px solid var(--gold)}
+.ty b{display:block;font:22px var(--hd);color:var(--gold2);margin-bottom:8px;letter-spacing:.06em}
+.ty h3{font-size:21px;color:var(--hi)}.ty p{margin:8px 0 0;color:var(--soft);font-size:15.5px}
+.ev .ty{border-top-color:var(--warn)}.ev .ty b{color:var(--warn)}
+.rqs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:22px;margin-top:36px}
+.rq{padding:24px 26px;background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--pda)}
+.rq+.rq{border-top-color:var(--gold)}
+.rq h3{font-size:22px;color:var(--hi);margin-bottom:8px}
+.rq dl{margin:0}.rq dl div{display:grid;grid-template-columns:minmax(0,10em) minmax(0,1fr);gap:4px 16px;padding:11px 0;border-bottom:1px dashed rgba(255,255,255,.08)}
+.rq dl div:last-child{border-bottom:0}
+.rq dt{font:14px var(--mono);color:var(--mut)}.rq dd{margin:0;color:var(--ink);font-size:16px}
+@media(max-width:600px){.rq dl div{grid-template-columns:minmax(0,1fr)}}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:16px;margin-top:20px}
+.bc{display:flex;flex-direction:column;background:var(--panel);border:1px solid rgba(255,255,255,.07)}
+.bc .pic{height:150px;display:flex;align-items:center;justify-content:center;padding:12px;background:radial-gradient(circle at 50% 70%,color-mix(in srgb,var(--fc) 22%,transparent),transparent 65%),linear-gradient(#121410,#1a1d17)}
+.bc .pic img{max-height:128px;width:auto;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(0,0,0,.6))}
+.bc .bd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.bc h3{font-size:19px;color:var(--hi)}.bc p{margin:0;font-size:14.5px;color:var(--soft)}
+.bc.hq{border-color:color-mix(in srgb,var(--fc) 55%,transparent)}
+.hp{color:var(--mut)!important}
+.bsub{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:22px;margin-top:34px}
+.bh{font-size:19px;color:var(--gold2);margin-bottom:12px}
+.blist{display:grid;gap:10px}
+.bi{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center;padding:10px 14px;background:var(--panel2);border:1px solid rgba(255,255,255,.06)}
+.bi>img{width:64px;height:56px;object-fit:contain}
+.bi .ph{width:64px;height:56px;display:grid;place-items:center;font:20px var(--hd);color:var(--gold2);border:1px dashed var(--line)}
+.bi b{font:17px var(--hd);color:var(--hi);font-weight:400}.bi p{margin:2px 0 0;font-size:14px;color:var(--soft)}
+.bi .cost{padding-top:4px}
+.gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:14px;margin-top:22px}
+.gal button{padding:0;border:1px solid var(--line);background:none;cursor:zoom-in;position:relative;overflow:hidden}
+.gal img{width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform .4s}
+.gal button:hover img{transform:scale(1.04)}
+.gal span{position:absolute;left:0;right:0;bottom:0;padding:8px 12px;text-align:left;background:linear-gradient(transparent,rgba(0,0,0,.85));font:13px var(--mono);color:var(--hi)}
+/* devlog + footer */
+.dev{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:22px}
+.log{padding:26px;background:var(--panel);border:1px solid var(--gline)}
+.log .v{font:24px var(--hd);color:var(--hi)}.log .d{font:14px var(--mono);color:var(--mut)}
+.log p{color:var(--soft)}
+.sub{display:flex;flex-direction:column;gap:10px;padding:26px;border:1px solid var(--line)}
+.sub b{font:20px var(--hd);color:var(--gold2)}
+.sub label{font-size:15px;color:var(--soft)}
+.sub input{min-height:48px;padding:0 14px;background:#0b0c0a;border:1px solid var(--line);color:var(--hi);font:16px var(--mono)}
+.sub .ok{font:14px var(--mono);color:var(--pda);min-height:20px}
+footer{padding:36px max(5vw,16px);border-top:1px solid var(--line);background:#080907}
+.ft{max-width:1220px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 36px;font:13px var(--mono);color:var(--mut)}
+.ft img{height:30px;width:auto}
+.ft nav{display:flex;flex-wrap:wrap;gap:0 22px}.ft nav a{font-size:14px;padding:12px 0;color:var(--soft);text-decoration:none}
+/* modals */
+.modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,4,3,.92)}
+.modal.on{display:flex}
+.screen{position:relative;width:100%;max-width:880px;aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:#0e110d url(img/em_before.webp) center/cover;box-shadow:inset 0 0 0 2000px rgba(8,10,8,.82);border:1px solid var(--line)}
+.screen b{font:clamp(20px,3vw,30px) var(--hd);color:var(--hi)}.screen p{margin:0;color:var(--soft)}
+.x{position:absolute;top:8px;right:8px;width:44px;height:44px;background:rgba(0,0,0,.5);border:1px solid var(--line);color:var(--hi);cursor:pointer}
+.lbox img{max-width:min(1600px,96vw);max-height:86vh;width:auto;border:1px solid var(--line)}
+.lbox figcaption{margin-top:10px;text-align:center;font:14px var(--mono);color:var(--soft)}
+@media(max-width:900px){.hero .in,.demo,.emgrid,.mapgrid,.camp,.dev,.after{grid-template-columns:minmax(0,1fr)}nav.top{display:none}}
+@media(max-width:600px){.map .pt span{display:none}.map .pt.sel span{display:inline}.loclist{display:flex}.ms li{grid-template-columns:64px minmax(0,1fr)}.ms li img{width:64px;height:64px}.fc .top .u.r{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <a class="lg" href="#top" aria-label="Зона резонанса — наверх"><img src="img/logo.webp" alt="Зона резонанса" width="120" height="36"></a>
+    <nav class="top" aria-label="Разделы">
+      <a href="#demo" data-t="n0">Демо</a><a href="#factions" data-t="n1">Фракции</a><a href="#emission" data-t="n2">Выброс</a><a href="#map" data-t="n3">Карта</a><a href="#campaign" data-t="n4">Кампания</a><a href="#army" data-t="n5">Армия</a><a href="#buildings" data-t="n6">Постройки</a><a href="#artifacts" data-t="n7">Артефакты</a>
+    </nav>
+    <div class="tools">
+      <button class="tbtn" id="snd" aria-pressed="false" aria-label="Музыка из игры"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span data-t="music">Музыка</span></button>
+      <button class="tbtn" id="lang" aria-label="Сменить язык / Switch language"><b id="lr">RU</b>/<span id="le">EN</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="ph" aria-hidden="true"></div><div class="scan" aria-hidden="true"></div>
+  <div class="in">
+    <div>
+      <h1>Зона резонанса</h1>
+      <img class="logo" src="img/logo.webp" alt="" width="1367" height="411">
+      <p class="tag" data-t="tag">Стратегия в реальном времени в Зоне отчуждения. Три фракции, мутанты, артефакты — и Выброс, который сжигает всех, кто не успел в укрытие.</p>
+      <p class="facts" data-t="facts">Кампания за Заслон · 11 локаций · 1×1 и 2×2 · игра по сети</p>
+      <div class="ctas">
+        <a class="btn gold" href="#demo" data-t="cta1">ДЕМО-ВЕРСИЯ</a>
+        <button class="btn ghost" id="trl"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg><span data-t="cta2">Трейлер</span></button>
+      </div>
+    </div>
+    <div class="pda" aria-live="polite">
+      <i></i><i></i><i></i><i></i>
+      <div class="r"><span data-t="p1">КПК · сеть Зоны</span><span data-t="p2">Дитятки · 2013</span></div>
+      <div class="msg" id="pmsg">Детектор пищит — значит, рядом аномалия или артефакт. Или и то и другое.</div>
+      <div class="kick" style="margin:6px 0 10px" data-t="until">До выхода демо · 1 декабря</div>
+      <div class="cdg" id="cd" role="timer" aria-label="Время до выхода демо"><div><b id="cdd">--</b><span data-t="cu1">дней</span></div><div><b id="cdh">--</b><span data-t="cu2">часов</span></div><div><b id="cdm">--</b><span data-t="cu3">минут</span></div><div><b id="cds">--</b><span data-t="cu4">секунд</span></div></div>
+      <a class="emit" href="#demo" data-t="emit">ЧТО БУДЕТ В ДЕМО ↓</a>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="demo">
+  <div class="wrap demo">
+    <div>
+      <div class="kick" data-t="k0">Демо-версия</div>
+      <h2 data-t="dh">Первые три миссии и пять карт — бесплатно</h2>
+      <ul class="dlist">
+        <li><b>3</b><span data-t="d1">миссии кампании за Заслон: «Новичок у Периметра», «Сигнал из болот», «Рассоха»</span></li>
+        <li><b>5</b><div><span data-t="d2">карт для свободной игры против компьютера</span><div class="chips"><span class="chip" data-t="l_dit">Дитятки</span><span class="chip" data-t="l_poy">Припятская пойма</span><span class="chip" data-t="l_ras">Рассоха</span><span class="chip" data-t="l_chi">Чистогаловка</span><span class="chip" data-t="l_kop">Копачи</span></div></div></li>
+        <li><b>3</b><span data-t="d3">играбельные фракции, мутанты, аномалии, 14 артефактов и Выброс</span></li>
+        <li><b>3</b><span data-t="d4">типа партии — Сражение, Превосходство, Опорный пункт — и события Зоны</span></li>
+      </ul>
+      <div class="ctas"><button class="btn gold" disabled data-t="dl">Демо — 1 декабря</button><a class="btn ghost" href="https://www.instagram.com/resonancezone/" data-t="dn">Узнать о выходе</a></div>
+      <div class="note"><span data-t="dnote">Windows · сетевая игра в демо — в разработке</span> · <a href="#specs" data-t="dspec">системные требования ↓</a></div>
+    </div>
+    <div class="shot"><img src="img/g_dolg_base_full.webp" alt="Кадр из демо: база Заслона с интерфейсом игры" loading="lazy" width="1600" height="900"><span data-t="ingame">кадр из игры</span></div>
+  </div>
+</section>
+
+<section class="band alt" id="factions">
+  <div class="wrap">
+    <div class="kick" data-t="k1">Фракции</div>
+    <h2 data-t="fh">Три силы. Одна Зона.</h2>
+    <p class="quote" data-t="fq">Заслон считает Зону <em>заразой</em>. Вольница — <em>даром</em>. Звонари — <em>святыней</em>.</p>
+    <div class="grid3">
+      <article class="fc" style="--c:var(--red);--t:var(--redt)">
+        <div class="top"><img class="em" src="img/emblem_dolg.webp" alt="Эмблема Заслона" loading="lazy"></div>
+        <div class="bd"><h3 data-t="za">ЗАСЛОН</h3><div class="en">Barrier</div>
+          <p data-t="zd">Военные на Периметре. Строй, броня и тяжёлая техника. Их задача — чтобы из Зоны ничего не вышло. В кампании ими командует капитан Громов «Кремень».</p>
+          <div class="perk" data-t="zp">Дисциплина: 5+ бойцов рядом получают на 15% меньше урона</div></div>
+      </article>
+      <article class="fc" style="--c:var(--grn);--t:var(--grnt)">
+        <div class="top"><img class="em" src="img/emblem_svoboda.webp" alt="Эмблема Вольницы" loading="lazy"></div>
+        <div class="bd"><h3 data-t="vo">ВОЛЬНИЦА</h3><div class="en">Freehold</div>
+          <p data-t="vd">Вольные сталкеры со своими законами и своей правдой о Зоне. Быстрые, хозяйственные, бьют из засады. Среди них — Ветер.</p>
+          <div class="perk" data-t="vp">Хозяйство: диггеры Вольницы собирают хабар быстрее</div></div>
+      </article>
+      <article class="fc" style="--c:var(--sand);--t:var(--sandt)">
+        <div class="top"><img class="em" src="img/emblem_monolith.webp" alt="Эмблема Звонарей" loading="lazy"></div>
+        <div class="bd"><h3 data-t="zv">ЗВОНАРИ</h3><div class="en">Bellringers</div>
+          <p data-t="zvd">Братство, что слышит зов из центра Зоны. Держат склады в Лелёве и НИИ в Копачах, на связь выходят через «Голос из бункера».</p>
+          <div class="perk" data-t="zvp">Им Выброс не страшен: пока вы в укрытии, они наступают</div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="emission">
+  <div class="wrap">
+    <div class="kick" style="color:var(--warn)" data-t="k2">Выброс</div>
+    <h2 data-t="eh">Небо краснеет. Кто снаружи — тот погиб.</h2>
+    <p class="lead" data-t="el">Главный враг в игре — сама Зона. Выброс приходит по расписанию, и ради укрытий строят базу не меньше, чем ради казарм. Потяните ползунок.</p>
+    <div class="emgrid">
+      <div>
+        <div class="cmp" id="cmp">
+          <img src="img/em_before.webp" alt="База Заслона перед Выбросом" width="1600" height="620">
+          <img class="top" src="img/em_during.webp" alt="Та же база во время Выброса" width="1600" height="620">
+          <div class="bar"></div>
+          <span class="lb a" data-t="cb1">за минуту до</span><span class="lb b" data-t="cb2">Выброс</span>
+          <input type="range" min="0" max="100" value="50" id="cmpr" aria-label="Сравнить кадры до и во время Выброса">
+        </div>
+        <div class="after"><img src="img/em_after.webp" alt="После Выброса: на открытом месте остались тела" loading="lazy" width="1600" height="620"><span class="note" style="margin:0" data-t="aft">После: на открытом месте остался тот, кто не успел. Кадры сняты в демо-версии.</span></div>
+      </div>
+      <ul class="tl">
+        <li><b data-t="t1">9:00</b><span data-t="t1d">первый Выброс. Дальше каждые 7 минут (можно чаще, реже или выключить).</span></li>
+        <li><b data-t="t2">−0:30</b><span data-t="t2d">сирена и предупреждение. Ведите людей в бункер, подвал или здание — у каждого свой лимит мест.</span></li>
+        <li><b data-t="t3">0:30</b><span data-t="t3d">волна идёт по карте. Вертолёты садятся и пережидают, пехота снаружи погибает.</span></li>
+        <li><b data-t="t4">после</b><span data-t="t4d">аномалии смещаются, у них появляются новые артефакты. Кто первым доберётся, тот и сильнее.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="map">
+  <div class="wrap">
+    <div class="kick" data-t="k3">ПДА · карта Зоны</div>
+    <h2 data-t="mh">11 локаций — от Дитяток до саркофага</h2>
+    <div class="mapgrid">
+      <div>
+        <div class="map" id="mapbox">
+          <svg viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+            <defs><pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0v20" fill="none" stroke="#18241a" stroke-width=".6"/></pattern>
+            <radialGradient id="hot" cx="58%" cy="34%" r="30%"><stop offset="0" stop-color="#5a1d12" stop-opacity=".55"/><stop offset="1" stop-color="#5a1d12" stop-opacity="0"/></radialGradient></defs>
+            <rect width="400" height="300" fill="url(#g)"/><rect width="400" height="300" fill="url(#hot)"/>
+            <path d="M330 0c-10 40-30 70-15 100s5 70-15 100-10 60-10 100" fill="none" stroke="#1d3943" stroke-width="7"/>
+            <ellipse cx="236" cy="110" rx="150" ry="112" fill="none" stroke="#3a5a3a" stroke-dasharray="6 5"/>
+            <ellipse cx="236" cy="105" rx="70" ry="52" fill="none" stroke="#7a3a22" stroke-dasharray="3 4"/>
+          </svg>
+        </div>
+        <div class="legend"><span><s class="g"></s><span data-t="lg1">есть в демо</span></span><span><s></s><span data-t="lg2">в разработке</span></span><span data-t="lg3">схема условная</span></div>
+        <div class="loclist" id="loclist"></div>
+      </div>
+      <aside class="side" aria-live="polite">
+        <div class="nm" id="lnm"></div>
+        <div class="pic" id="lpic"></div>
+        <p id="ldesc"></p>
+        <div class="tags" id="ltags"></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="campaign">
+  <div class="wrap">
+    <div class="kick" data-t="k4">Кампания · записи КПК</div>
+    <h2 data-t="ch">Тайна «Резонатора»</h2>
+    <div class="camp">
+      <div class="dos">
+        <div class="kick" style="margin:0" data-t="dos">Личное дело</div>
+        <div class="who" data-t="gr">Капитан Громов «Кремень»</div>
+        <p data-t="grd">Дитятки, 2013 год. После Выброса пропала связь с блокпостом Заслона. Громов ведёт отряд принять то, что от поста осталось.</p>
+        <p data-t="grd2">Поднять базу у Периметра, пройти болота поймы и свалку, вернуть документы Деда и выйти на след «Резонатора» — того, ради чего Вольница и Звонари лезут в глубь Зоны.</p>
+        <div class="crew" data-t="crew">Сержант Лис · прапорщик Дед · лейтенант Беркут · Ветер (Вольница) · «Голос из бункера» (Звонари)</div>
+      </div>
+      <ol class="ms" id="ms"></ol>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="army">
+  <div class="wrap">
+    <div class="kick" data-t="k5">Армия</div>
+    <h2 data-t="ah">От диггера до Ми-24</h2>
+    <p class="lead" data-t="al">Всё строится на двух ресурсах: хабаре и аномальных фрагментах. Цены — из демо-версии.</p>
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="units" id="units" role="tabpanel"></div>
+  </div>
+</section>
+
+<section class="band" id="buildings">
+  <div class="wrap">
+    <div class="kick" style="color:var(--gold2)" data-t="k6">Постройки</div>
+    <h2 data-t="muh">Своя база у каждой стороны</h2>
+    <p class="lead" data-t="mul">У каждой фракции свои здания и своя архитектура: где у Заслона бункер, у Вольницы подвал, у Звонарей крипта. Цены и прочность — из демо-версии.</p>
+    <div class="tabs" role="tablist" id="btabs"></div>
+    <div class="bgrid" id="bmain"></div>
+    <div class="bsub">
+      <div><h3 class="bh" data-t="bh1">Пристройки к казарме</h3><div class="blist" id="badd"></div></div>
+      <div><h3 class="bh" data-t="bh2">Полевые укрепления · строит инженер</h3><div class="blist" id="bfield"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="artifacts">
+  <div class="wrap">
+    <div class="kick" style="color:var(--gold2)" data-t="k7">Артефакты</div>
+    <h2 data-t="arh">14 находок, которые меняют бой</h2>
+    <p class="lead" data-t="arl">Бойцы подбирают их у аномалий и складывают в контейнер, а применить можно в любой момент. После каждого Выброса аномалии смещаются — и рождают новые находки. Четыре артефакта редкие.</p>
+    <div class="arts" id="arts"></div>
+  </div>
+</section>
+
+<section class="band" id="modes">
+  <div class="wrap">
+    <div class="kick" data-t="k8">Режимы и кадры</div>
+    <h2 data-t="mdh">Своя Зона на каждую партию</h2>
+    <div class="modes">
+      <div class="md"><h3 data-t="m1">Свободная игра</h3><p data-t="m1d">1 на 1 или 2 на 2 с союзником против компьютера трёх уровней сложности. На карте ПДА видно, где чья база, — щелчок по номеру выбирает ваше место.</p>
+        <ul><li data-t="m1a">Выброс: выключен, редко, обычно, часто</li><li data-t="m1b">мутанты: от «нет» до «много»</li><li data-t="m1c">аномалии и радиация</li><li data-t="m1e">стартовые ресурсы, место базы, 8 цветов армии</li></ul></div>
+      <div class="md"><h3 data-t="m2">Сетевая игра</h3><p data-t="m2d">Двое игроков друг против друга или вместе против двух компьютеров.</p>
+        <ul><li data-t="m2a">по локальной сети или через Radmin VPN</li><li data-t="m2b">игру считает компьютер создавшего</li><li data-t="m2c">в демо-версии — в разработке</li></ul></div>
+    </div>
+    <div class="kick" style="margin-top:56px" data-t="kt">Тип партии · новое</div>
+    <div class="types">
+      <div class="ty"><b>⚔</b><h3 data-t="ty1">Сражение</h3><p data-t="ty1d">Классика: победа — разрушить базу противника.</p></div>
+      <div class="ty"><b>A·B·C</b><h3 data-t="ty2">Превосходство</h3><p data-t="ty2d">Держите точки A, B и C — очки идут за каждую. Точку берут за 20 секунд. Кто первым наберёт 300 очков, тот победил.</p></div>
+      <div class="ty"><b>◎</b><h3 data-t="ty3">Опорный пункт</h3><p data-t="ty3d">Одна точка, раз в 2 минуты переезжает. За 20 секунд до переезда новая точка отмечается на карте. Победа — 250 очков.</p></div>
+    </div>
+    <p class="note" data-t="tyn">Длина партии: коротко, обычно или долго. Превосходство и Опорный пункт — на картах с режимом 2 на 2 (в демо — Чистогаловка и Рассоха). Разрушенная база противника — тоже победа.</p>
+    <div class="kick" style="margin-top:44px;color:var(--warn)" data-t="ke">События Зоны · новое</div>
+    <div class="types ev">
+      <div class="ty"><b>SOS</b><h3 data-t="ev1">Сигнал о помощи</h3><p data-t="ev1d">Сталкеры отбиваются от мутантов, место отмечено на карте. У вас 2:30: успеете спасти — бойцы присоединятся к отряду. Не успеете — может, спасёт противник, а может, останется только тайник.</p></div>
+      <div class="ty"><b>≋</b><h3 data-t="ev2">Гон в тумане</h3><p data-t="ev2d">Туман сгущается, мутанты беспокоятся. Потом стая идёт на самую слабую базу. Держите бойцов ближе к дому.</p></div>
+    </div>
+    <div class="gal" id="gal"></div>
+  </div>
+</section>
+
+<section class="band alt" id="specs">
+  <div class="wrap">
+    <div class="kick" data-t="k10">Системные требования</div>
+    <h2 data-t="rqh">Пойдёт ли у вас</h2>
+    <div class="rqs">
+      <div class="rq"><h3 data-t="rq_min">Минимальные</h3><dl><div><dt data-t="rl_os">ОС</dt><dd data-t="rv_min_os">Windows 10 64-bit</dd></div><div><dt data-t="rl_cpu">Процессор</dt><dd data-t="rv_min_cpu">4 ядра, 3.0 ГГц (Intel Core i5-4590 / AMD Ryzen 3 1200)</dd></div><div><dt data-t="rl_ram">Оперативная память</dt><dd data-t="rv_min_ram">8 GB ОЗУ</dd></div><div><dt data-t="rl_gpu">Видеокарта</dt><dd data-t="rv_min_gpu">с поддержкой Vulkan 1.1 или DirectX 12, 2 GB видеопамяти (NVIDIA GeForce GTX 960 / AMD Radeon RX 460)</dd></div><div><dt data-t="rl_hdd">Место на диске</dt><dd data-t="rv_min_hdd">1 GB</dd></div><div><dt data-t="rl_add">Дополнительно</dt><dd data-t="rv_min_add">разрешение 1280×720; низкие настройки графики</dd></div></dl></div>
+      <div class="rq"><h3 data-t="rq_rec">Рекомендованные</h3><dl><div><dt data-t="rl_os">ОС</dt><dd data-t="rv_rec_os">Windows 10/11 64-bit</dd></div><div><dt data-t="rl_cpu">Процессор</dt><dd data-t="rv_rec_cpu">6 ядер, 3.5 ГГц (Intel Core i5-9600K / AMD Ryzen 5 3600)</dd></div><div><dt data-t="rl_ram">Оперативная память</dt><dd data-t="rv_rec_ram">16 GB ОЗУ</dd></div><div><dt data-t="rl_gpu">Видеокарта</dt><dd data-t="rv_rec_gpu">4–6 GB видеопамяти (NVIDIA GeForce GTX 1660 / AMD Radeon RX 5600 XT)</dd></div><div><dt data-t="rl_hdd">Место на диске</dt><dd data-t="rv_rec_hdd">1 GB</dd></div><div><dt data-t="rl_add">Дополнительно</dt><dd data-t="rv_rec_add">разрешение 1920×1080; средние и высокие настройки</dd></div></dl></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="devlog">
+  <div class="wrap dev">
+    <div class="log">
+      <div class="kick" data-t="k9">Дневник разработки</div>
+      <div><span class="v" data-t="lv">Обновление демо</span> · <span class="d" data-t="ld">22 ноября 2026</span></div>
+      <p data-t="lp">Обновление демо: типы партии «Превосходство» и «Опорный пункт», события Зоны — «Сигнал о помощи» и «Гон в тумане», снимки карт в ПДА с выбором места базы, новые текстуры мутантов, оконный режим. Игру делает один человек на Godot, она готовится к Steam.</p>
+      <a href="https://www.instagram.com/resonancezone/" data-t="lig">Новости и рилсы — в Instagram @resonancezone →</a>
+    </div>
+    <form class="sub" id="sub">
+      <b data-t="sb">Сообщить о выходе</b>
+      <label for="em" data-t="sl">Почта для новостей и даты релиза</label>
+      <input id="em" type="email" required placeholder="you@example.com" autocomplete="email">
+      <button class="btn gold" type="submit" data-t="sbt">ПОДПИСАТЬСЯ</button>
+      <div class="ok" id="ok" role="status"></div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="ft">
+    <img src="img/logo.webp" alt="Зона резонанса" width="100" height="30" loading="lazy">
+    <nav aria-label="Ссылки"><a href="https://www.instagram.com/resonancezone/">Instagram</a><a href="#top" data-t="up">Наверх ↑</a></nav>
+    <span data-t="copy">© 2026 Пётр Парамонов · музыка и звуки — из игры</span>
+  </div>
+</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+  <div class="screen">
+    <button class="x" data-close aria-label="Закрыть"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    <b id="mt" data-t="tt">Трейлер готовится</b>
+    <p data-t="tp">Пока его нет, геймплей можно посмотреть в рилсах.</p>
+    <a class="btn ghost" href="https://www.instagram.com/resonancezone/">Instagram @resonancezone</a>
+  </div>
+</div>
+<div class="modal lbox" id="lbox" role="dialog" aria-modal="true" aria-label="Кадр из игры">
+  <button class="x" data-close aria-label="Закрыть"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+  <figure style="margin:0"><img id="lbimg" alt=""><figcaption id="lbcap"></figcaption></figure>
+</div>
+
+<script>
+{
+const $=s=>document.querySelector(s);
+let lang='ru';
+const L=o=>o[lang]??o.ru;
+
+const EN={n0:'Demo',n1:'Factions',n2:'Emission',n3:'Map',n4:'Campaign',n5:'Army',n6:'Buildings',n7:'Artifacts',music:'Music',
+tag:'Real-time strategy in the Exclusion Zone. Three factions, mutants, artifacts — and an Emission that burns everyone who failed to reach shelter.',
+facts:'Barrier campaign · 11 locations · 1v1 and 2v2 · online play',cta1:'DEMO',cta2:'Trailer',p1:'PDA · Zone network',p2:'Dityatki · 2013',until:'Demo release · December 1',emit:'WHAT\'S IN THE DEMO ↓',cu1:'days',cu2:'hours',cu3:'minutes',cu4:'seconds',
+k0:'Demo version',dh:'The first three missions and five maps — free',d1:'Barrier campaign missions: "Rookie at the Perimeter", "Signal from the Swamps", "Rassokha"',
+d2:'maps for skirmish against the computer',d3:'playable factions, mutants, anomalies, 14 artifacts and the Emission',l_dit:'Dityatki',l_poy:'Pripyat floodplain',l_ras:'Rassokha',l_chi:'Chistogalovka',l_kop:'Kopachi',
+dl:'Demo — December 1',dn:'Get notified',dnote:'Windows · online play in the demo is in development',dspec:'system requirements ↓',ingame:'in-game shot',
+k1:'Factions',fh:'Three forces. One Zone.',fq:'The Barrier sees the Zone as a plague. Freehold — as a gift. The Bellringers — as a shrine.',
+za:'BARRIER',zd:'Soldiers of the Perimeter. Formation, armour and heavy vehicles. Their job is to make sure nothing leaves the Zone. In the campaign they are led by Captain Gromov "Flint".',zp:'Discipline: 5+ soldiers close together take 15% less damage',
+vo:'FREEHOLD',vd:'Free stalkers with their own laws and their own truth about the Zone. Fast, resourceful, deadly from ambush. Veter is one of them.',vp:'Economy: Freehold diggers gather loot faster',
+zv:'BELLRINGERS',zvd:'A brotherhood that hears a call from the heart of the Zone. They hold the Lelev warehouses and the Kopachi institute and speak through the "Voice from the bunker".',zvp:'They don\'t fear the Emission: while you hide, they advance',
+k2:'Emission',eh:'The sky turns red. Whoever is outside is dead.',el:'The main enemy is the Zone itself. The Emission comes on schedule, so you build shelters as much as barracks. Drag the slider.',
+cb1:'a minute before',cb2:'Emission',aft:'After: whoever didn\'t make it is still lying in the open. Shots taken in the demo.',
+t1:'9:00',t1d:'the first Emission. Then every 7 minutes (more often, rarer or off).',t2:'−0:30',t2d:'siren and warning. Get your people into a bunker, cellar or building — each has its own capacity.',
+t3:'0:30',t3d:'the wave sweeps the map. Helicopters land and wait it out, infantry in the open dies.',t4:'after',t4d:'the anomalies shift and new artifacts appear. Whoever gets there first gets stronger.',
+k3:'PDA · Zone map',mh:'11 locations — from Dityatki to the sarcophagus',lg1:'in the demo',lg2:'in development',lg3:'schematic map',
+k4:'Campaign · PDA records',ch:'The secret of the "Resonator"',dos:'Personnel file',gr:'Captain Gromov "Flint"',grd:'Dityatki, 2013. After the Emission, contact with the Barrier checkpoint was lost. Gromov leads his squad to take over whatever is left of the post.',
+grd2:'Raise a base at the Perimeter, cross the floodplain swamps and the dump, recover Ded\'s documents and pick up the trail of the "Resonator" — the reason Freehold and the Bellringers push deep into the Zone.',
+crew:'Sergeant Lis · Warrant Officer Ded · Lieutenant Berkut · Veter (Freehold) · "Voice from the bunker" (Bellringers)',
+k5:'Army',ah:'From digger to Mi-24',al:'Everything runs on two resources: loot and anomalous fragments. Prices are from the demo.',
+k6:'Buildings',muh:'Every side builds its own base',mul:'Each faction has its own buildings and architecture: where the Barrier has a bunker, Freehold has a cellar and the Bellringers a crypt. Costs and durability are from the demo.',bh1:'Barracks add-ons',bh2:'Field fortifications · built by engineers',
+k7:'Artifacts',arh:'14 finds that change the battle',arl:'Your troops pick them up near anomalies and put them in a container; use them at any moment. After every Emission the anomalies shift and spawn new finds. Four artifacts are rare.',
+k8:'Modes and shots',mdh:'Your own Zone in every match',m1:'Skirmish',m1d:'1v1 or 2v2 with an ally against the computer at three difficulty levels. The PDA map shows every base — click a number to pick your spot.',m1a:'Emission: off, rare, normal, often',m1b:'mutants: from "none" to "many"',m1c:'anomalies and radiation',m1e:'starting resources, base position, 8 army colours',
+m2:'Online',m2d:'Two players against each other, or together against two AI opponents.',m2a:'over LAN or via Radmin VPN',m2b:'the host\'s computer runs the game',m2c:'in development for the demo',
+k9:'Devlog',lv:'Demo update',ld:'22 November 2026',lp:'Demo update: Domination and Stronghold match types, Zone events — Distress signal and Rut in the fog, map shots in the PDA with base position choice, new mutant textures, windowed mode. The game is made by one person in Godot and is being prepared for Steam.',lig:'News and reels on Instagram @resonancezone →',
+sb:'Notify me at launch',sl:'Email for news and the release date',sbt:'SUBSCRIBE',up:'Back to top ↑',copy:'© 2026 Petr Paramonov · music and sounds from the game',
+bt:'WARNING! EMISSION',bs:'Everyone outside shelter will die.',k10:'System requirements',rqh:'Will it run',rq_min:'Minimum',rq_rec:'Recommended',rl_os:'OS',rv_min_os:'Windows 10 64-bit',rv_rec_os:'Windows 10/11 64-bit',rl_cpu:'Processor',rv_min_cpu:'4 cores, 3.0 GHz (Intel Core i5-4590 / AMD Ryzen 3 1200)',rv_rec_cpu:'6 cores, 3.5 GHz (Intel Core i5-9600K / AMD Ryzen 5 3600)',rl_ram:'Memory',rv_min_ram:'8 GB RAM',rv_rec_ram:'16 GB RAM',rl_gpu:'Graphics',rv_min_gpu:'Vulkan 1.1 or DirectX 12 support, 2 GB VRAM (NVIDIA GeForce GTX 960 / AMD Radeon RX 460)',rv_rec_gpu:'4–6 GB VRAM (NVIDIA GeForce GTX 1660 / AMD Radeon RX 5600 XT)',rl_hdd:'Storage',rv_min_hdd:'1 GB',rv_rec_hdd:'1 GB',rl_add:'Additional',rv_min_add:'1280×720 resolution; low graphics settings',rv_rec_add:'1920×1080 resolution; medium to high settings',tt:'The trailer is in the works',tp:'Until then, watch the gameplay in our reels.',kt:'Match type · new',ty1:'Battle',ty1d:'The classic: destroy the enemy base to win.',ty2:'Domination',ty2d:'Hold points A, B and C — each one scores. A point takes 20 seconds to capture. First to 300 points wins.',
+ty3:'Stronghold',ty3d:'A single point that moves every 2 minutes; the next one is marked on the map 20 seconds ahead. First to 250 wins.',
+tyn:'Match length: short, normal or long. Domination and Stronghold are on 2v2 maps (Chistogalovka and Rassokha in the demo). Destroying the enemy base still wins.',
+ke:'Zone events · new',ev1:'Distress signal',ev1d:'Stalkers are fighting off mutants at a marked spot. You have 2:30: save them and they join your squad. Fail, and the enemy may get them — or only their stash is left.',
+ev2:'Rut in the fog',ev2d:'The fog thickens and mutants grow restless. Then the pack goes for the weakest base. Keep your troops close to home.',
+d4:'match types — Battle, Domination, Stronghold — and Zone events'};
+
+const UI={ru:{play:'Свободная игра',mis:'Миссия',demo:'Есть в демо',full:'В разработке',lock:'в разработке',hpl:'прочность',dev:'В РАЗРАБОТКЕ',sent:'Подписка заработает, когда сайт будет размещён.',brief:'карта брифинга',shot:'снимок карты из игры',modes:'Превосходство, Опорный пункт',nobrief:'Локация свободной игры',hab:'хабар',arts:'фрагменты',rare:'редкий',from:'аномалия',after:'редкая находка',
+tips:['Детектор пищит — значит, рядом аномалия или артефакт. Или и то и другое.','Хабар сам себя не соберёт. Диггеры — основа любой базы.','Звонарям Выброс не страшен — пока ты в укрытии, они наступают.','Морока не видно, пока он не ударит. Держи снайпера рядом.','Матка сторожит логово. Без брони и гранатомётов к ней не суйся.'],
+out:'Демо вышло!',warn:'Внимание! Скоро Выброс — всем в укрытие.'},
+en:{play:'Skirmish',mis:'Mission',demo:'In the demo',full:'In development',lock:'in development',hpl:'durability',dev:'IN DEVELOPMENT',sent:'Sign-up will work once the site is live.',brief:'briefing map',shot:'in-game map shot',modes:'Domination, Stronghold',nobrief:'Skirmish location',hab:'loot',arts:'fragments',rare:'rare',from:'anomaly',after:'rare find',
+tips:['The detector beeps — so there\'s an anomaly or an artifact nearby. Or both.','Loot won\'t gather itself. Diggers are the backbone of any base.','The Bellringers don\'t fear the Emission — while you\'re in shelter, they advance.','You can\'t see a phantom until it strikes. Keep a sniper close.','The matriarch guards the lair. Don\'t go near her without armor and grenadiers.'],
+out:'The demo is out!',warn:'Warning! Emission incoming — everyone to shelter.'}};
+
+const P=[
+{id:'pripyat',ru:'Припять',en:'Pripyat',x:60,y:14,d:{ru:'Стадион на севере, площадь с гостиницей «Полесье» и ДК «Энергетик» в центре, проспект на юге.',en:'A stadium in the north, the square with the Polissya hotel and the Energetik palace of culture in the centre, an avenue in the south.'}},
+{id:'amber',ru:'Янов',en:'Yanov',x:72,y:22,m:6,d:{ru:'Завод на севере, озеро и бункер учёных в низине, дорога по восточной кромке.',en:'A factory in the north, a lake and a scientists\' bunker in the lowland, a road along the eastern edge.'}},
+{id:'chernobyl',ru:'ЧАЭС',en:'ChNPP',x:57,y:31,m:7,d:{ru:'Станция: главный корпус с 4-м блоком и машзалом, промзона, ж/д ветки, сухие каналы охлаждения. Звонари — у реактора, Заслон заходит с востока.',en:'The plant: the main building with Unit 4 and the turbine hall, an industrial zone, rail lines, dry cooling channels. The Bellringers hold the reactor, the Barrier comes from the east.'}},
+{id:'darkvalley',ru:'Чистогаловка',en:'Chistogalovka',x:38,y:28,demo:1,v2:1,d:{ru:'Село на холме с церковью и кладбищем, река с мостами на востоке, ферма «Заря» на севере, МТС и ставок на юге.',en:'A hilltop village with a church and a cemetery, a river with bridges in the east, the Zarya farm in the north, a machine station and a pond in the south.'}},
+{id:'swamps',ru:'Припятская пойма',en:'Pripyat floodplain',x:74,y:43,m:2,demo:1,d:{ru:'Топи и камыши, технику держат только гати. Базы — на западе и востоке, рыбацкие хутора.',en:'Bogs and reeds; only log roads hold vehicles. Bases in the west and east, fishing farmsteads.'}},
+{id:'agroprom',ru:'Копачи',en:'Kopachi',x:57,y:44,m:5,demo:1,d:{ru:'Густые леса вокруг заброшенного НИИ: корпуса института в кольце дорог, военная часть с вертолётной площадкой на востоке. Карта большая.',en:'Dense forest around an abandoned institute in a ring of roads, a military unit with a helipad in the east. A big map.'}},
+{id:'radar',ru:'«Дуга»',en:'"Duga"',x:16,y:40,d:{ru:'Г-образная карта: антенное поле «Дуги», военная база и дорога на западе, лесистый овраг с упавшим вертолётом.',en:'An L-shaped map: the Duga antenna field, a military base and a road in the west, a wooded ravine with a crashed helicopter.'}},
+{id:'ammo',ru:'Лелёв',en:'Lelev',x:57,y:58,m:4,d:{ru:'Военная база со складами на юго-востоке, деревня на западе, хутор у пруда на северо-востоке, скалы и озёра по краям.',en:'A military base with warehouses in the south-east, a village in the west, a farmstead by a pond in the north-east.'}},
+{id:'dump',ru:'Рассоха',en:'Rassokha',x:30,y:64,m:3,demo:1,v2:1,d:{ru:'Кладбище техники: горы хлама, депо, вагоны и вышки, ряды брошенных машин. Леса почти нет. Базы на юге и севере.',en:'A vehicle graveyard: heaps of scrap, a depot, wagons and towers, rows of abandoned machines. Almost no forest.'}},
+{id:'limansk',ru:'Чернобыль',en:'Chernobyl',x:70,y:72,d:{ru:'Город-призрак: 16 кварталов пятиэтажек, дворы и парк с колесом. Базы на западе и востоке, бои за каждый дом.',en:'Ghost town: 16 blocks of five-storey buildings, courtyards and a park with a Ferris wheel. A fight for every house.'}},
+{id:'cordon',ru:'Дитятки',en:'Dityatki',x:45,y:89,m:1,demo:1,d:{ru:'Холмы, перелески и деревня на перекрёстке. Базы — в противоположных углах, много дорог.',en:'Hills, copses and a village at a crossroads. Bases in opposite corners, many roads.'}}];
+
+const M=[
+{ru:'Новичок у Периметра',en:'Rookie at the Perimeter',p:{ru:'Дитятки',en:'Dityatki'},d:{ru:'Поднять базу, отбиться от того, что придёт с ферм, и пережить первый Выброс.',en:'Raise a base, fight off whatever comes from the farms and survive your first Emission.'}},
+{ru:'Сигнал из болот',en:'Signal from the Swamps',p:{ru:'Припятская пойма',en:'Pripyat floodplain'},d:{ru:'Разведгруппа Беркута молчит третьи сутки. Базы нет, только отряд Громова. В тумане охотятся мороки.',en:'Berkut\'s recon team has been silent for three days. No base, only Gromov\'s squad. Phantoms hunt in the fog.'}},
+{ru:'Рассоха',en:'Rassokha',p:{ru:'Рассоха',en:'Rassokha'},d:{ru:'Вольница перехватила колонну Деда. В грузовике — документы из архива по «Резонатору».',en:'Freehold intercepted Ded\'s convoy. The truck carries documents from the "Resonator" archive.'}},
+{ru:'Лелёв',en:'Lelev',p:{ru:'Лелёв',en:'Lelev'}},{ru:'Копачи',en:'Kopachi',p:{ru:'Копачи',en:'Kopachi'}},
+{ru:'Защита',en:'Defence',p:{ru:'Янов',en:'Yanov'}},{ru:'Последний бой',en:'The Last Battle',p:{ru:'ЧАЭС',en:'ChNPP'}}];
+
+const U={inf:[
+{i:'dolg_recruit_dolg',ru:'Диггер',en:'Digger',c:[50],d:{ru:'Добывает хабар и фрагменты, строит базу. В бою почти бесполезен — берегите.',en:'Gathers loot and fragments, builds the base. Nearly useless in combat.'}},
+{i:'dolg_trooper_dolg',ru:'Штурмовик',en:'Trooper',c:[75],d:{ru:'Основа армии: дёшев и быстро обучается.',en:'The backbone of the army: cheap and quick to train.'}},
+{i:'dolg_mg_dolg',ru:'Пулемётчик',en:'Machine gunner',c:[100],d:{ru:'Прижимает пехоту и стаи мутантов огнём на подавление.',en:'Pins down infantry and mutant packs with suppressing fire.'}},
+{i:'dolg_sniper_dolg',ru:'Снайпер',en:'Sniper',c:[100,10],d:{ru:'Бьёт издалека и видит мороков раньше других.',en:'Hits from afar and spots phantoms before anyone else.'}},
+{i:'dolg_grenadier_dolg',ru:'Гранатомётчик',en:'Grenadier',c:[125],d:{ru:'Против техники, укреплений и логова Матки.',en:'Against vehicles, fortifications and the matriarch\'s lair.'}},
+{i:'dolg_exo_dolg',ru:'Экзоскелет',en:'Exoskeleton',c:[150,40],d:{ru:'Тяжёлая пехота: держит огонь, который сносит отряд.',en:'Heavy infantry that shrugs off fire that would wipe a squad.'}},
+{i:'engineer_dolg',ru:'Инженер',en:'Engineer',c:[90],d:{ru:'Ставит в поле мешки, «ежи», проволоку и мины, чинит технику.',en:'Builds sandbags, hedgehogs, wire and mines in the field, repairs vehicles.'}}],
+veh:[
+{i:'pickup_mg_dolg',ru:'УАЗ с пулемётом',en:'UAZ with machine gun',c:[175],d:{ru:'Быстрая разведка и рейды по диггерам.',en:'Fast scouting and raids on diggers.'}},
+{i:'pickup_mortar_dolg',ru:'УАЗ с миномётом',en:'UAZ with mortar',c:[200,15],d:{ru:'Мина в точку — земля горит 8 секунд.',en:'A round at a point — the ground burns for 8 seconds.'}},
+{i:'btr80_dolg',ru:'БТР-80',en:'BTR-80',c:[300],d:{ru:'Ракета по технике, вертолёту или зданию — 30% полной прочности.',en:'A missile at a vehicle, helicopter or building — 30% of full durability.'}},
+{i:'shilka_dolg',ru:'ЗСУ «Шилка»',en:'ZSU "Shilka"',c:[275,20],d:{ru:'Зенитка: закрывает небо над базой от вертолётов.',en:'Anti-aircraft: closes the sky over your base to helicopters.'}},
+{i:'t72_dolg',ru:'Т-72',en:'T-72',c:[350,40],d:{ru:'Фугасный выстрел в точку — по толпе пехоты и мутантов.',en:'HE shot at a point — against crowds of infantry and mutants.'}}],
+air:[
+{i:'mi8_dolg',ru:'Ми-8',en:'Mi-8',c:[250,20],d:{ru:'Садится, высаживает четырёх бойцов и улетает. Десант туда, где не ждут.',en:'Lands, drops four soldiers and flies off. Troops where nobody expects them.'}},
+{i:'mi24_dolg',ru:'Ми-24',en:'Mi-24',c:[400,60],d:{ru:'Ударный вертолёт: на 5 секунд ракеты летят в 2,5 раза чаще.',en:'Attack helicopter: for 5 s its rockets fire 2.5 times faster.'}}],
+base:[
+{i:'dolg_hq_dolg',ru:'Штаб Заслона',en:'Barrier HQ',d:{ru:'Сердце базы. Падёт штаб — проиграна партия.',en:'The heart of the base. Lose the HQ, lose the match.'}},
+{i:'svo_hq_svoboda',ru:'Штаб Вольницы',en:'Freehold HQ',d:{ru:'Лагерь на вышке с флагом: своя архитектура у каждой стороны.',en:'A camp on a tower under a flag: each side builds its own way.'}},
+{i:'mono_hq_monolith',ru:'Штаб Звонарей',en:'Bellringers HQ',d:{ru:'Колокольня — место, где братство слушает Зону.',en:'A bell tower where the brotherhood listens to the Zone.'}}]};
+const TABS=[['inf','Пехота','Infantry'],['veh','Техника','Vehicles'],['air','Вертолёты','Helicopters']];
+let tab='inf';
+
+const MU=[
+{i:'morok',ru:'Морок',en:'Phantom',d:{ru:'Морока не видно, пока он не ударит. Держи снайпера рядом.',en:'You can\'t see a phantom until it strikes. Keep a sniper close.'}},
+{i:'skakun',ru:'Скакун',en:'Leaper',d:{ru:'Скакун прыгает издалека. Не подпускай стаю к пулемётчику.',en:'A leaper jumps from afar. Don\'t let the pack reach your machine gunner.'}},
+{i:'gryz',ru:'Грызь',en:'Gnawer',d:{ru:'Мелкие и быстрые, приходят стаей и грызут склады.',en:'Small and fast, they come in packs and chew through depots.'}},
+{i:'gryz_lead',ru:'Вожак грызи',en:'Gnawer leader',d:{ru:'Пулемёты — на мелочь. Вожака с горбом — первым, иначе разбегутся по базе.',en:'Machine guns on the small ones. The humpbacked leader first, or they scatter across the base.'}},
+{i:'kopun',ru:'Копун',en:'Burrower',d:{ru:'Сидит в земле, выныривает под пехотой. Технику не трогает — держите людей за бронёй.',en:'Hides in the ground and surfaces under infantry. Leaves vehicles alone — keep people behind armour.'}},
+{i:'matka',ru:'Матка',en:'Matriarch',d:{ru:'Сторожит логово. Без брони и гранатомётов к ней не суйся. За логово — 40 фрагментов.',en:'Guards the lair. Don\'t go near without armour and grenadiers. The lair is worth 40 fragments.'}},
+{i:'burnt',ru:'Выгоревший',en:'Burnt',d:{ru:'Выгоревшие когда-то были сталкерами. Теперь им всё равно, в кого стрелять.',en:'The Burnt were once stalkers. Now they don\'t care who they shoot.'}}];
+
+const AN={electra:{ru:'Разряд',en:'Discharge'},zharka:{ru:'Горелка',en:'Burner'},tramplin:{ru:'Отбой',en:'Rebound'},voronka:{ru:'Сгусток',en:'Clot'},kisel:{ru:'Кисляк',en:'Sourpit'}};
+const AR=[
+['flash','#8cd9ff','Живица','Sap','здоровье +25% на 5 минут','health +25% for 5 minutes','electra'],
+['lira','#b3ccff','Перо','Feather','скорость +25% на 5 минут','speed +25% for 5 minutes','electra'],
+['drop','#ff8c26','Шип','Thorn','урон +25% на 5 минут','damage +25% for 5 minutes','zharka'],
+['fireball','#ff731a','Искра','Spark','скорострельность +25% на 5 минут','fire rate +25% for 5 minutes','zharka'],
+['meat','#d95959','Двойник','Double','+2 таких же бойца бесплатно','+2 identical troops for free','tramplin'],
+['shell','#ccd980','Чешуя','Scales','получаемый урон −30% на 5 минут','damage taken −30% for 5 minutes','tramplin'],
+['kolobok','#d9bf73','Оберег','Amulet','неуязвим к аномалиям и радиации 5 минут','immune to anomalies and radiation for 5 minutes','voronka'],
+['stone','#bfa68c','Кварц','Quartz','+150 хабара','+150 loot','voronka'],
+['slime','#8cf24d','Роса','Dew','пехота рядом исцелена полностью','nearby infantry fully healed','kisel'],
+['slyuda','#99ff59','Окалина','Scale','+20 аномальных фрагментов','+20 anomalous fragments','kisel'],
+['battery','#f2ff66','Самородок','Nugget','+200 аномальных фрагментов','+200 anomalous fragments',''],
+['beads','#ffe6f2','Колокольчик','Little Bell','вся пехота стороны: здоровье +10% на 5 минут','all infantry of the side: health +10% for 5 minutes',''],
+['flame','#ffd94d','Набат','Alarm Bell','вся пехота стороны: скорострельность +25% на 5 минут','all infantry of the side: fire rate +25% for 5 minutes',''],
+['soul','#ff73d9','Заступник','Guardian','неуязвимость на 5 минут','invulnerability for 5 minutes','']];
+
+const GAL=[
+{f:'g_dolg_base',full:'g_dolg_base_full',ru:'База Заслона: штаб, казармы, вертолётная площадка',en:'Barrier base: HQ, barracks, helipad'},
+{f:'g_svo_base',full:'g_svo_base_full',ru:'Лагерь Вольницы под атакой',en:'Freehold camp under attack'},
+{f:'g_emission_town',full:'g_emission_town_full',ru:'Выброс над посёлком: все вне укрытий гибнут',en:'Emission over a settlement: everyone outside shelter dies'},
+{f:'g_lair',full:'g_lair_full',ru:'Логово мутантов уничтожено: +40 фрагментов',en:'Mutant lair destroyed: +40 fragments'},
+{f:'em_before',ru:'Штаб Заслона за минуту до Выброса',en:'Barrier HQ a minute before the Emission'},
+{f:'em_after',ru:'После волны',en:'After the wave'}];
+const ruText={};
+document.querySelectorAll('[data-t]').forEach(e=>ruText[e.dataset.t]=e.innerHTML);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let pick=10;
+function drawMap(){
+  const box=$('#mapbox');box.querySelectorAll('.pt').forEach(e=>e.remove());
+  box.insertAdjacentHTML('beforeend',P.map((p,i)=>`<button class="pt${p.demo?' dm':''}${i===pick?' sel':''}" style="left:${p.x}%;top:${p.y}%" data-i="${i}" aria-pressed="${i===pick}" aria-label="${esc(L(p))}"><span>${esc(L(p))}</span></button>`).join(''));
+  $('#loclist').innerHTML=P.map((p,i)=>`<button data-i="${i}" aria-pressed="${i===pick}">${esc(L(p))}</button>`).join('');
+  const c=P[pick],u=UI[lang];
+  $('#lnm').textContent=L(c);$('#ldesc').textContent=L(c.d);
+  $('#lpic').innerHTML=`<img src="img/loc_${c.id}.webp" alt="${esc(u.shot+': '+L(c))}"><div class="cap">${u.shot}</div>${c.demo?'':`<div class="dev">${u.dev}</div>`}`;
+  $('#ltags').innerHTML=(c.demo?`<span class="tg g">${u.demo}</span>`:`<span class="tg">${u.full}</span>`)+`<span class="tg">${u.play}</span>`+(c.v2?`<span class="tg">2×2 · ${u.modes}</span>`:'')+(c.m?`<span class="tg r">${u.mis} ${c.m} · «${esc(L(M[c.m-1]))}»</span>`:'');
+}
+function drawMissions(){
+  const u=UI[lang];
+  $('#ms').innerHTML=M.map((m,i)=>`<li class="${i>2?'lock':''}"><img src="img/brief_m${i+1}.webp" alt="" loading="lazy"><div><div class="n">${u.mis} ${i+1} · ${esc(L(m.p))}</div><div class="t" data-l="${u.lock}">${esc(L(m))}</div>${m.d?`<p>${esc(L(m.d))}</p>`:''}</div></li>`).join('');
+}
+function cost(c){const u=UI[lang];return c?`<div class="cost"><span><img src="img/res_habar.webp" alt="">${c[0]} ${u.hab}</span>${c[1]?`<span class="a"><img src="img/res_arts.webp" alt="">${c[1]} ${u.arts}</span>`:''}</div>`:''}
+function drawUnits(){
+  $('#tabs').innerHTML=TABS.map(t=>`<button role="tab" aria-selected="${t[0]===tab}" data-tab="${t[0]}">${lang==='ru'?t[1]:t[2]}</button>`).join('');
+  $('#units').innerHTML=U[tab].map(x=>`<article class="un"><div class="pic"><img src="img/u_${x.i}.webp" alt="" loading="lazy"></div><div class="bd"><h3>${esc(L(x))}</h3><p>${esc(L(x.d))}</p>${cost(x.c)}</div></article>`).join('');
+}
+const BD={"0": {"main": [{"id": "dolg_depot", "ru": "Склад провианта", "en": "Supply depot", "nru": "+10 к численности", "nen": "+10 supply", "c": [80, 0], "hp": 800, "img": "b/dolg_depot_dolg.webp"}, {"id": "dolg_barracks", "ru": "Казарма", "en": "Barracks", "nru": "пехота; пристройки: Тир, Научный центр", "nen": "infantry; add-ons: Range, Science center", "c": [125, 0], "hp": 1500, "img": "b/dolg_barracks_dolg.webp"}, {"id": "dolg_armory", "ru": "Лаборатория", "en": "Laboratory", "nru": "экзоскелеты, улучшения брони и оружия; открывает автобазу", "nen": "exoskeletons, armor and weapon upgrades; unlocks the motor pool", "c": [150, 0], "hp": 1000, "img": "b/dolg_armory_dolg.webp"}, {"id": "dolg_motorpool", "ru": "Автобаза", "en": "Motor pool", "nru": "УАЗы, БТР-80, «Шилка», Т-72", "nen": "UAZs, BTR-80, Shilka, T-72", "c": [175, 0], "hp": 1600, "img": "b/dolg_motorpool_dolg.webp"}, {"id": "dolg_post", "ru": "Блокпост", "en": "Checkpoint", "nru": "пулемётная точка, видит далеко", "nen": "machine-gun post, sees far", "c": [110, 0], "hp": 1200, "img": "b/dolg_post_dolg.webp"}, {"id": "dolg_bunker", "ru": "Бункер", "en": "Bunker", "nru": "укрытие на 10, бойцы остаются внутри и после Выброса", "nen": "shelter for 10, troops stay inside after the Emission too", "c": [105, 0], "hp": 1800, "img": "b/dolg_bunker_dolg.webp"}, {"id": "dolg_infirmary", "ru": "Лазарет", "en": "Infirmary", "nru": "лечит пехоту вокруг", "nen": "heals nearby infantry", "c": [110, 0], "hp": 900, "img": "b/dolg_infirmary_dolg.webp"}, {"id": "dolg_repair", "ru": "Ремонтная мастерская", "en": "Repair shop", "nru": "чинит технику и вертолёты вокруг", "nen": "repairs nearby vehicles and helicopters", "c": [140, 0], "hp": 1000, "img": "b/dolg_repair_dolg.webp"}, {"id": "dolg_helipad", "ru": "Вертолётная площадка", "en": "Helipad", "nru": "Ми-24, Ми-8; вертолёты садятся и пережидают Выброс", "nen": "Mi-24, Mi-8; helicopters land and wait out the Emission", "c": [250, 50], "hp": 1300, "img": "b/dolg_helipad_dolg.webp"}, {"id": "dolg_hq", "ru": "Штаб", "en": "HQ", "nru": "диггеры, приём добычи", "nen": "diggers, loot drop-off", "c": [400, 0], "hp": 3000, "img": "b/dolg_hq_dolg.webp"}], "add": [{"id": "dolg_tir", "ru": "Тир", "en": "Range", "nru": "казарма учит двоих сразу (штурмовики, пулемётчики), очередь до 10", "nen": "barracks train two at once (troopers, machine gunners), queue up to 10", "c": [50, 10], "hp": 700, "img": null}, {"id": "dolg_sci", "ru": "Научный центр", "en": "Science center", "nru": "казарма учит гранатомётчиков и снайперов", "nen": "barracks train grenadiers and snipers", "c": [30, 30], "hp": 700, "img": null}], "field": [{"id": "field_sandbags", "ru": "Окоп с мешками", "en": "Sandbag trench", "nru": "окоп 3×1 на 3 пехотинцев: стреляют из него, урон по ним −25%; от Выброса не спасает", "nen": "3×1 trench for 3 infantrymen: they shoot from it, damage to them −25%; no protection from the Emission", "c": [40, 0], "hp": 700, "img": "b/field_sandbags_dolg.webp"}, {"id": "field_wire", "ru": "Колючая проволока", "en": "Barbed wire", "nru": "пехота проходит втрое медленнее, мутанты ранятся", "nen": "infantry moves three times slower, mutants get hurt", "c": [20, 0], "hp": 250, "img": "b/field_wire_dolg.webp"}, {"id": "field_hedgehog", "ru": "Противотанковые ежи", "en": "Anti-tank hedgehogs", "nru": "техника не проходит, пехота — свободно", "nen": "vehicles can't pass, infantry passes freely", "c": [30, 0], "hp": 600, "img": "b/field_hedgehog_dolg.webp"}, {"id": "field_mine", "ru": "Мина", "en": "Mine", "nru": "невидима врагу: технике −40% прочности, пехотинца убивает; видна инженерам", "nen": "invisible to the enemy: vehicles −40% durability, kills an infantryman; seen by engineers", "c": [25, 0], "hp": 12, "img": "b/field_mine_dolg.webp"}, {"id": "field_dugout", "ru": "Землянка", "en": "Dugout", "nru": "укрытие от Выброса на 6 бойцов прямо в поле (пока идёт Выброс, не осыпается)", "nen": "Emission shelter for 6 troops right in the field (doesn't collapse while the Emission lasts)", "c": [40, 0], "hp": 500, "img": "b/field_dugout_dolg.webp"}]}, "1": {"main": [{"id": "svo_stash", "ru": "Схрон", "en": "Stash", "nru": "+10 к численности, дешевле склада", "nen": "+10 supply, cheaper than the depot", "c": [80, 0], "hp": 600, "img": "b/svo_stash_svoboda.webp"}, {"id": "svo_camp", "ru": "Лагерь", "en": "Camp", "nru": "пехота; пристройки: Тир, Научный центр", "nen": "infantry; add-ons: Range, Science center", "c": [125, 0], "hp": 1200, "img": "b/svo_camp_svoboda.webp"}, {"id": "svo_lab", "ru": "Лаборатория", "en": "Laboratory", "nru": "экзоскелеты, улучшения брони и оружия; открывает автобазу", "nen": "exoskeletons, armor and weapon upgrades; unlocks the motor pool", "c": [150, 0], "hp": 1000, "img": "b/svo_lab_svoboda.webp"}, {"id": "svo_garage", "ru": "Гараж", "en": "Garage", "nru": "УАЗы, БТР-80, «Шилка», Т-72", "nen": "UAZs, BTR-80, Shilka, T-72", "c": [175, 0], "hp": 1300, "img": "b/svo_garage_svoboda.webp"}, {"id": "svo_post", "ru": "Пулемётное гнездо", "en": "Machine-gun nest", "nru": "пулемётная точка, видит далеко", "nen": "machine-gun post, sees far", "c": [110, 0], "hp": 1000, "img": "b/svo_post_svoboda.webp"}, {"id": "svo_cellar", "ru": "Подвал", "en": "Cellar", "nru": "укрытие на 12, бойцы остаются внутри и после Выброса", "nen": "shelter for 12, troops stay inside after the Emission too", "c": [105, 0], "hp": 1400, "img": "b/svo_cellar_svoboda.webp"}, {"id": "svo_infirmary", "ru": "Медпункт", "en": "First aid post", "nru": "лечит пехоту вокруг", "nen": "heals nearby infantry", "c": [110, 0], "hp": 800, "img": "b/svo_infirmary_svoboda.webp"}, {"id": "svo_workshop", "ru": "Мастерская", "en": "Workshop", "nru": "чинит технику и вертолёты вокруг", "nen": "repairs nearby vehicles and helicopters", "c": [140, 0], "hp": 900, "img": "b/svo_workshop_svoboda.webp"}, {"id": "svo_helipad", "ru": "Вертолётная площадка", "en": "Helipad", "nru": "Ми-24, Ми-8; вертолёты садятся и пережидают Выброс", "nen": "Mi-24, Mi-8; helicopters land and wait out the Emission", "c": [250, 50], "hp": 1200, "img": "b/svo_helipad_svoboda.webp"}, {"id": "svo_hq", "ru": "База", "en": "Base", "nru": "диггеры, приём добычи", "nen": "diggers, loot drop-off", "c": [400, 0], "hp": 2600, "img": "b/svo_hq_svoboda.webp"}], "add": [{"id": "svo_tir", "ru": "Тир", "en": "Range", "nru": "лагерь учит двоих сразу (штурмовики, пулемётчики), очередь до 10", "nen": "the camp trains two at once (troopers, machine gunners), queue up to 10", "c": [50, 10], "hp": 650, "img": null}, {"id": "svo_sci", "ru": "Научный центр", "en": "Science center", "nru": "лагерь учит снайперов и бойцов в экзоскелете", "nen": "the camp trains snipers and exoskeleton troops", "c": [30, 30], "hp": 650, "img": null}], "field": [{"id": "field_sandbags", "ru": "Окоп с мешками", "en": "Sandbag trench", "nru": "окоп 3×1 на 3 пехотинцев: стреляют из него, урон по ним −25%; от Выброса не спасает", "nen": "3×1 trench for 3 infantrymen: they shoot from it, damage to them −25%; no protection from the Emission", "c": [40, 0], "hp": 700, "img": "b/field_sandbags_svoboda.webp"}, {"id": "field_wire", "ru": "Колючая проволока", "en": "Barbed wire", "nru": "пехота проходит втрое медленнее, мутанты ранятся", "nen": "infantry moves three times slower, mutants get hurt", "c": [20, 0], "hp": 250, "img": "b/field_wire_svoboda.webp"}, {"id": "field_hedgehog", "ru": "Противотанковые ежи", "en": "Anti-tank hedgehogs", "nru": "техника не проходит, пехота — свободно", "nen": "vehicles can't pass, infantry passes freely", "c": [30, 0], "hp": 600, "img": "b/field_hedgehog_svoboda.webp"}, {"id": "field_mine", "ru": "Мина", "en": "Mine", "nru": "невидима врагу: технике −40% прочности, пехотинца убивает; видна инженерам", "nen": "invisible to the enemy: vehicles −40% durability, kills an infantryman; seen by engineers", "c": [25, 0], "hp": 12, "img": "b/field_mine_svoboda.webp"}, {"id": "field_dugout", "ru": "Землянка", "en": "Dugout", "nru": "укрытие от Выброса на 6 бойцов прямо в поле (пока идёт Выброс, не осыпается)", "nen": "Emission shelter for 6 troops right in the field (doesn't collapse while the Emission lasts)", "c": [40, 0], "hp": 500, "img": "b/field_dugout_svoboda.webp"}]}, "3": {"main": [{"id": "mono_depot", "ru": "Келья", "en": "Cell", "nru": "+10 к численности", "nen": "+10 supply", "c": [80, 0], "hp": 600, "img": "b/mono_depot_monolith.webp"}, {"id": "mono_barracks", "ru": "Казарма послушников", "en": "Novice barracks", "nru": "пехота; пристройки: Тир, Научный центр", "nen": "infantry; add-ons: Range, Science center", "c": [125, 0], "hp": 1200, "img": "b/mono_barracks_monolith.webp"}, {"id": "mono_armory", "ru": "Алтарь", "en": "Altar", "nru": "экзоскелеты, улучшения брони и оружия; открывает автобазу", "nen": "exoskeletons, armor and weapon upgrades; unlocks the motor pool", "c": [150, 0], "hp": 1000, "img": "b/mono_armory_monolith.webp"}, {"id": "mono_motorpool", "ru": "Ангар", "en": "Hangar", "nru": "УАЗы, БТР-80, «Шилка», Т-72", "nen": "UAZs, BTR-80, Shilka, T-72", "c": [175, 0], "hp": 1300, "img": "b/mono_motorpool_monolith.webp"}, {"id": "mono_post", "ru": "Звонница", "en": "Belfry", "nru": "пулемётная точка, видит далеко", "nen": "machine-gun post, sees far", "c": [110, 0], "hp": 1000, "img": "b/mono_post_monolith.webp"}, {"id": "mono_bunker", "ru": "Крипта", "en": "Crypt", "nru": "укрытие на 10, бойцы остаются внутри и после Выброса", "nen": "shelter for 10, troops stay inside after the Emission too", "c": [105, 0], "hp": 1400, "img": "b/mono_bunker_monolith.webp"}, {"id": "mono_infirmary", "ru": "Лазарет", "en": "Infirmary", "nru": "лечит пехоту вокруг", "nen": "heals nearby infantry", "c": [110, 0], "hp": 800, "img": "b/mono_infirmary_monolith.webp"}, {"id": "mono_repair", "ru": "Мастерская", "en": "Workshop", "nru": "чинит технику и вертолёты вокруг", "nen": "repairs nearby vehicles and helicopters", "c": [140, 0], "hp": 900, "img": "b/mono_repair_monolith.webp"}, {"id": "mono_helipad", "ru": "Вертолётная площадка", "en": "Helipad", "nru": "Ми-24, Ми-8; вертолёты садятся и пережидают Выброс", "nen": "Mi-24, Mi-8; helicopters land and wait out the Emission", "c": [250, 50], "hp": 1200, "img": "b/mono_helipad_monolith.webp"}, {"id": "mono_hq", "ru": "Колокольня", "en": "Bell tower", "nru": "диггеры, приём добычи", "nen": "diggers, loot drop-off", "c": [400, 0], "hp": 2600, "img": "b/mono_hq_monolith.webp"}], "add": [{"id": "mono_tir", "ru": "Тир", "en": "Range", "nru": "казарма учит двоих сразу (штурмовики, пулемётчики), очередь до 10", "nen": "barracks train two at once (troopers, machine gunners), queue up to 10", "c": [50, 10], "hp": 650, "img": null}, {"id": "mono_sci", "ru": "Научный центр", "en": "Science center", "nru": "казарма учит гранатомётчиков и снайперов", "nen": "barracks train grenadiers and snipers", "c": [30, 30], "hp": 650, "img": null}], "field": [{"id": "field_sandbags", "ru": "Окоп с мешками", "en": "Sandbag trench", "nru": "окоп 3×1 на 3 пехотинцев: стреляют из него, урон по ним −25%; от Выброса не спасает", "nen": "3×1 trench for 3 infantrymen: they shoot from it, damage to them −25%; no protection from the Emission", "c": [40, 0], "hp": 700, "img": "b/field_sandbags_monolith.webp"}, {"id": "field_wire", "ru": "Колючая проволока", "en": "Barbed wire", "nru": "пехота проходит втрое медленнее, мутанты ранятся", "nen": "infantry moves three times slower, mutants get hurt", "c": [20, 0], "hp": 250, "img": "b/field_wire_monolith.webp"}, {"id": "field_tripwire", "ru": "Растяжка", "en": "Tripwire", "nru": "невидима врагу: одноразово убивает пехотинца, технику не трогает; видна инженерам", "nen": "invisible to the enemy: kills one infantryman once, ignores vehicles; seen by engineers", "c": [20, 0], "hp": 12, "img": "b/field_tripwire_monolith.webp"}, {"id": "field_mine", "ru": "Мина", "en": "Mine", "nru": "невидима врагу: технике −40% прочности, пехотинца убивает; видна инженерам", "nen": "invisible to the enemy: vehicles −40% durability, kills an infantryman; seen by engineers", "c": [25, 0], "hp": 12, "img": "b/field_mine_monolith.webp"}, {"id": "field_dugout", "ru": "Землянка", "en": "Dugout", "nru": "укрытие от Выброса на 6 бойцов прямо в поле (пока идёт Выброс, не осыпается)", "nen": "Emission shelter for 6 troops right in the field (doesn't collapse while the Emission lasts)", "c": [40, 0], "hp": 500, "img": "b/field_dugout_monolith.webp"}]}};
+const BF=[['0','Заслон','Barrier','#a8211f'],['1','Вольница','Freehold','#4d9e38'],['3','Звонари','Bellringers','#c7bd9e']];let bfac='0';
+function drawB(){
+  const u=UI[lang],k=lang==='ru';const F=BF.find(f=>f[0]===bfac);
+  $('#btabs').innerHTML=BF.map(f=>`<button role="tab" aria-selected="${f[0]===bfac}" data-bf="${f[0]}">${k?f[1]:f[2]}</button>`).join('');
+  const d=BD[bfac],nm=x=>esc(k?x.ru:x.en),nt=x=>esc(k?x.nru:x.nen);
+  $('#bmain').style.setProperty('--fc',F[3]);
+  $('#bmain').innerHTML=d.main.map(x=>`<article class="bc${/_hq$/.test(x.id)?' hq':''}"><div class="pic"><img src="img/${x.img}" alt="" loading="lazy"></div><div class="bd"><h3>${nm(x)}</h3><p>${nt(x)}</p>${cost(x.c)}<p class="hp mono" style="font-size:12.5px">${u.hpl} ${x.hp}</p></div></article>`).join('');
+  $('#badd').innerHTML=d.add.map((x,i)=>`<div class="bi"><div class="ph">${i?'⚗':'◎'}</div><div><b>${nm(x)}</b><p>${nt(x)}</p>${cost(x.c)}</div></div>`).join('');
+  $('#bfield').innerHTML=d.field.map(x=>`<div class="bi"><img src="img/${x.img}" alt="" loading="lazy"><div><b>${nm(x)}</b><p>${nt(x)}</p>${cost(x.c)}</div></div>`).join('');
+}
+function drawArts(){
+  const u=UI[lang],k=lang==='ru'?0:1;
+  $('#arts').innerHTML=AR.map(a=>`<article class="ar" style="--ac:${a[1]}">${a[6]?'':`<span class="rare">${u.rare}</span>`}<div class="glow"><img src="img/art_${a[0]}.webp" alt="" loading="lazy"></div><h3>${a[2+k]}</h3><p>${a[4+k]}</p><div class="src">${a[6]?`${u.from}: ${L(AN[a[6]])}`:u.after}</div></article>`).join('');
+}
+function drawGal(){
+  $('#gal').innerHTML=GAL.map((g,i)=>`<button data-g="${i}"><img src="img/${g.f}.webp" alt="${esc(L(g))}" loading="lazy"><span>${esc(L(g))}</span></button>`).join('');
+}
+function setLang(l){
+  lang=l;document.documentElement.lang=l;
+  document.querySelectorAll('[data-t]').forEach(e=>{const k=e.dataset.t;e.innerHTML=l==='en'&&EN[k]?esc(EN[k]):ruText[k]});
+  $('#lr').style.color=l==='ru'?'var(--gold2)':'';$('#le').style.color=l==='en'?'var(--gold2)':'';
+  document.title=l==='ru'?'Зона резонанса':'Resonance Zone';
+  try{localStorage.setItem('zr-lang',l)}catch(e){}
+  drawMap();drawMissions();drawUnits();drawB();drawArts();drawGal();tip();
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-i]');if(b){pick=+b.dataset.i;drawMap();return}
+  const bf=e.target.closest('[data-bf]');if(bf){bfac=bf.dataset.bf;drawB();return}
+  const t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;drawUnits();return}
+  const g=e.target.closest('[data-g]');if(g){const x=GAL[+g.dataset.g];$('#lbimg').src=`img/${x.full||x.f}.webp`;$('#lbimg').alt=L(x);$('#lbcap').textContent=L(x);open('#lbox');return}
+  if(e.target.closest('[data-close]')||e.target.classList.contains('modal'))closeAll();
+});
+$('#lang').onclick=()=>setLang(lang==='ru'?'en':'ru');
+
+/* compare slider */
+const cmp=$('#cmp');$('#cmpr').addEventListener('input',e=>cmp.style.setProperty('--x',e.target.value+'%'));
+
+/* sound */
+const TR=['audio/menu_signal.mp3','audio/menu_grounds.mp3','audio/menu_watch.mp3'];let ti=0,soundOn=false;
+const mus=new Audio();mus.preload='none';mus.volume=.55;mus.onended=()=>{ti=(ti+1)%TR.length;mus.src=TR[ti];mus.play().catch(()=>{})};
+const beep=new Audio('audio/beep.mp3');beep.preload='none';beep.volume=.5;
+$('#snd').onclick=()=>{soundOn=!soundOn;$('#snd').classList.toggle('on',soundOn);$('#snd').setAttribute('aria-pressed',soundOn);
+  if(soundOn){if(!mus.src)mus.src=TR[ti];mus.play().catch(()=>{soundOn=false;$('#snd').classList.remove('on')})}else mus.pause()};
+
+/* countdown to demo */
+const REL=Date.parse('2026-12-01T00:00:00+03:00');let tipI=0;
+function tip(){const t=UI[lang].tips;$('#pmsg').textContent=t[tipI%t.length]}
+const pad=n=>String(n).padStart(2,'0');
+function tick(){const d=Math.max(0,Math.floor((REL-Date.now())/1000));
+  if(d===0){$('#cd').innerHTML=`<div style="grid-column:1/-1"><b>${UI[lang].out}</b></div>`;return}
+  $('#cdd').textContent=Math.floor(d/86400);$('#cdh').textContent=pad(Math.floor(d%86400/3600));$('#cdm').textContent=pad(Math.floor(d%3600/60));$('#cds').textContent=pad(d%60);
+  if(d%15===0){tipI++;tip()}}
+tick();setInterval(tick,1000);
+
+/* modals */
+let last=null;
+function open(s){last=document.activeElement;$(s).classList.add('on');$(s).querySelector('[data-close]').focus()}
+function closeAll(){document.querySelectorAll('.modal.on').forEach(m=>m.classList.remove('on'));if(last)last.focus()}
+$('#trl').onclick=()=>open('#modal');
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+$('#sub').onsubmit=e=>{e.preventDefault();$('#ok').textContent=UI[lang].sent};
+
+let saved='ru';try{saved=localStorage.getItem('zr-lang')||'ru'}catch(e){}
+setLang(saved==='en'?'en':'ru');
+}
+</script>
+</body>
+</html>
