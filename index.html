@@ -605,13 +605,7 @@ background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transpar
       <p data-t="lp">Обновление демо: типы партии «Превосходство» и «Опорный пункт», события Зоны — «Сигнал о помощи» и «Гон в тумане», снимки карт в ПДА с выбором места базы, новые текстуры мутантов, оконный режим. Игру делает один человек на Godot, она готовится к Steam.</p>
       <a href="https://www.instagram.com/resonancezone/" data-t="lig">Новости и рилсы — в Instagram @resonancezone →</a>
     </div>
-    <form class="sub" id="sub">
-      <b data-t="sb">Сообщить о выходе</b>
-      <label for="em" data-t="sl">Почта для новостей и даты релиза</label>
-      <input id="em" type="email" required placeholder="you@example.com" autocomplete="email">
-      <button class="btn gold" type="submit" data-t="sbt">ПОДПИСАТЬСЯ</button>
-      <div class="ok" id="ok" role="status"></div>
-    </form>
+    <div class="sub-slot" aria-hidden="true"></div>
   </div>
 </section>
 </main>
@@ -843,7 +837,7 @@ function open(s){last=document.activeElement;$(s).classList.add('on');$(s).query
 function closeAll(){document.querySelectorAll('.modal.on').forEach(m=>m.classList.remove('on'));if(last)last.focus()}
 $('#trl').onclick=()=>open('#modal');
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
-$('#sub').onsubmit=e=>{e.preventDefault();$('#ok').textContent=UI[lang].sent};
+
 
 let saved='ru';try{saved=localStorage.getItem('zr-lang')||'ru'}catch(e){}
 setLang(saved==='en'?'en':'ru');
@@ -1087,7 +1081,7 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return
   b.classList.add('seen');const h=b.querySelector('h2');if(h){h.classList.add('gl','go');scramble(h)}
   if(!mob&&Math.random()<.5)flash(.25);
   b.querySelectorAll('.rv').forEach((c,i)=>setTimeout(()=>c.classList.add('on'),120+i*70))}),{threshold:.18});
-const RV='.kick,.lead,.quote,.dlist li,.demo .shot,.fc,.cmp,.after,.tl li,.map,.side,.dos,.ms li,.tabs,.bsub>div,.arts .ar,.md,.ty,.gal button,.rq,.log,.sub,.legend';
+const RV='.kick,.lead,.quote,.dlist li,.demo .shot,.fc,.cmp,.after,.tl li,.map,.side,.dos,.ms li,.tabs,.bsub>div,.arts .ar,.md,.ty,.gal button,.rq,.log,.legend';
 function prep(){if(calm)return;$$('.band').forEach(b=>{b.querySelectorAll(RV).forEach(c=>c.classList.add('rv'));io.observe(b)})}
 prep();
 const GL='АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ#%&/<>01';
