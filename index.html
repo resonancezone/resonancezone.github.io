@@ -246,6 +246,12 @@ footer{padding:36px max(5vw,16px);border-top:1px solid var(--line);background:#0
 @media(max-width:900px){.hero .in,.demo,.emgrid,.mapgrid,.camp,.dev,.after{grid-template-columns:minmax(0,1fr)}nav.top{display:none}}
 @media(max-width:600px){.map .pt span{display:none}.map .pt.sel span{display:inline}.loclist{display:flex}.ms li{grid-template-columns:64px minmax(0,1fr)}.ms li img{width:64px;height:64px}.fc .top .u.r{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}html{scroll-behavior:auto}}
+.side .pic .locked{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;color:var(--gold2);
+background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transparent 14px 28px),radial-gradient(circle at 50% 45%,#1d1a12,#0a0b08 75%)}
+.side .pic .locked::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px);pointer-events:none}
+.side .pic .locked b{font:20px var(--hd);letter-spacing:.12em}.side .pic .locked span{font:12px var(--mono);color:var(--mut)}
+.mlock{width:96px;height:96px;border:1px solid var(--gline);background:repeating-linear-gradient(135deg,rgba(212,172,28,.08) 0 8px,transparent 8px 16px),#0b0c09}
+@media(max-width:600px){.mlock{width:64px;height:64px}}
 </style>
 </head>
 <body>
@@ -549,10 +555,10 @@ ke:'Zone events · new',ev1:'Distress signal',ev1d:'Stalkers are fighting off mu
 ev2:'Rut in the fog',ev2d:'The fog thickens and mutants grow restless. Then the pack goes for the weakest base. Keep your troops close to home.',
 d4:'match types — Battle, Domination, Stronghold — and Zone events'};
 
-const UI={ru:{play:'Свободная игра',mis:'Миссия',demo:'Есть в демо',full:'В разработке',lock:'в разработке',hpl:'прочность',dev:'В РАЗРАБОТКЕ',sent:'Подписка заработает, когда сайт будет размещён.',brief:'карта брифинга',shot:'снимок карты из игры',modes:'Превосходство, Опорный пункт',nobrief:'Локация свободной игры',hab:'хабар',arts:'фрагменты',rare:'редкий',from:'аномалия',after:'редкая находка',
+const UI={ru:{play:'Свободная игра',mis:'Миссия',demo:'Есть в демо',full:'В разработке',lock:'в разработке',hpl:'прочность',dev:'В РАЗРАБОТКЕ',nosnap:'снимок карты закрыт до полной версии',sent:'Подписка заработает, когда сайт будет размещён.',brief:'карта брифинга',shot:'снимок карты из игры',modes:'Превосходство, Опорный пункт',nobrief:'Локация свободной игры',hab:'хабар',arts:'фрагменты',rare:'редкий',from:'аномалия',after:'редкая находка',
 tips:['Детектор пищит — значит, рядом аномалия или артефакт. Или и то и другое.','Хабар сам себя не соберёт. Диггеры — основа любой базы.','Звонарям Выброс не страшен — пока ты в укрытии, они наступают.','Морока не видно, пока он не ударит. Держи снайпера рядом.','Матка сторожит логово. Без брони и гранатомётов к ней не суйся.'],
 out:'Демо вышло!',warn:'Внимание! Скоро Выброс — всем в укрытие.'},
-en:{play:'Skirmish',mis:'Mission',demo:'In the demo',full:'In development',lock:'in development',hpl:'durability',dev:'IN DEVELOPMENT',sent:'Sign-up will work once the site is live.',brief:'briefing map',shot:'in-game map shot',modes:'Domination, Stronghold',nobrief:'Skirmish location',hab:'loot',arts:'fragments',rare:'rare',from:'anomaly',after:'rare find',
+en:{play:'Skirmish',mis:'Mission',demo:'In the demo',full:'In development',lock:'in development',hpl:'durability',dev:'IN DEVELOPMENT',nosnap:'map shot locked until the full version',sent:'Sign-up will work once the site is live.',brief:'briefing map',shot:'in-game map shot',modes:'Domination, Stronghold',nobrief:'Skirmish location',hab:'loot',arts:'fragments',rare:'rare',from:'anomaly',after:'rare find',
 tips:['The detector beeps — so there\'s an anomaly or an artifact nearby. Or both.','Loot won\'t gather itself. Diggers are the backbone of any base.','The Bellringers don\'t fear the Emission — while you\'re in shelter, they advance.','You can\'t see a phantom until it strikes. Keep a sniper close.','The matriarch guards the lair. Don\'t go near her without armor and grenadiers.'],
 out:'The demo is out!',warn:'Warning! Emission incoming — everyone to shelter.'}};
 
@@ -644,12 +650,12 @@ function drawMap(){
   $('#loclist').innerHTML=P.map((p,i)=>`<button data-i="${i}" aria-pressed="${i===pick}">${esc(L(p))}</button>`).join('');
   const c=P[pick],u=UI[lang];
   $('#lnm').textContent=L(c);$('#ldesc').textContent=L(c.d);
-  $('#lpic').innerHTML=`<img src="img/loc_${c.id}.webp" alt="${esc(u.shot+': '+L(c))}"><div class="cap">${u.shot}</div>${c.demo?'':`<div class="dev">${u.dev}</div>`}`;
+  $('#lpic').innerHTML=c.demo?`<img src="img/loc_${c.id}.webp" alt="${esc(u.shot+': '+L(c))}"><div class="cap">${u.shot}</div>`:`<div class="locked" role="img" aria-label="${esc(u.dev)}"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><b>${u.dev}</b><span>${u.nosnap}</span></div>`;
   $('#ltags').innerHTML=(c.demo?`<span class="tg g">${u.demo}</span>`:`<span class="tg">${u.full}</span>`)+`<span class="tg">${u.play}</span>`+(c.v2?`<span class="tg">2×2 · ${u.modes}</span>`:'')+(c.m?`<span class="tg r">${u.mis} ${c.m} · «${esc(L(M[c.m-1]))}»</span>`:'');
 }
 function drawMissions(){
   const u=UI[lang];
-  $('#ms').innerHTML=M.map((m,i)=>`<li class="${i>2?'lock':''}"><img src="img/brief_m${i+1}.webp" alt="" loading="lazy"><div><div class="n">${u.mis} ${i+1} · ${esc(L(m.p))}</div><div class="t" data-l="${u.lock}">${esc(L(m))}</div>${m.d?`<p>${esc(L(m.d))}</p>`:''}</div></li>`).join('');
+  $('#ms').innerHTML=M.map((m,i)=>`<li class="${i>2?'lock':''}">${i>2?'<div class="mlock" aria-hidden="true"></div>':`<img src="img/brief_m${i+1}.webp" alt="" loading="lazy">`}<div><div class="n">${u.mis} ${i+1} · ${esc(L(m.p))}</div><div class="t" data-l="${u.lock}">${esc(L(m))}</div>${m.d?`<p>${esc(L(m.d))}</p>`:''}</div></li>`).join('');
 }
 function cost(c){const u=UI[lang];return c?`<div class="cost"><span><img src="img/res_habar.webp" alt="">${c[0]} ${u.hab}</span>${c[1]?`<span class="a"><img src="img/res_arts.webp" alt="">${c[1]} ${u.arts}</span>`:''}</div>`:''}
 function drawUnits(){
