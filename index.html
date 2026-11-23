@@ -246,6 +246,114 @@ footer{padding:36px max(5vw,16px);border-top:1px solid var(--line);background:#0
 @media(max-width:900px){.hero .in,.demo,.emgrid,.mapgrid,.camp,.dev,.after{grid-template-columns:minmax(0,1fr)}nav.top{display:none}}
 @media(max-width:600px){.map .pt span{display:none}.map .pt.sel span{display:inline}.loclist{display:flex}.ms li{grid-template-columns:64px minmax(0,1fr)}.ms li img{width:64px;height:64px}.fc .top .u.r{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}html{scroll-behavior:auto}}
+/* ===== Вариант «Выброс»: оболочка поверх общих блоков ===== */
+html{background:#070606}
+body{background:transparent}
+#sky{position:fixed;inset:0;width:100vw;height:100vh;z-index:-2;display:block;background:#2a0406}
+.flash{position:fixed;inset:0;z-index:40;pointer-events:none;background:radial-gradient(ellipse at var(--fx,50%) var(--fy,30%),rgba(255,120,90,.35),rgba(255,40,20,.08) 50%,transparent 75%);opacity:var(--flash,0);mix-blend-mode:screen}
+.cglow{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;z-index:-1;pointer-events:none;border-radius:50%;background:radial-gradient(circle,rgba(255,70,40,.16),transparent 60%);transform:translate(var(--mx,-999px),var(--my,-999px));transition:opacity .4s}
+@media(pointer:coarse){.cglow{display:none}}
+
+/* --- заставка --- */
+.intro{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:#050404;color:var(--pda);font-family:var(--mono);cursor:pointer}
+.intro::before{content:"";position:absolute;inset:-50%;background-image:repeating-radial-gradient(circle at 17% 32%,rgba(255,255,255,.05) 0 1px,transparent 1px 3px),repeating-linear-gradient(0deg,rgba(155,227,143,.05) 0 1px,transparent 1px 3px);animation:noise .25s steps(3) infinite}
+@keyframes noise{33%{transform:translate(2%,-3%)}66%{transform:translate(-3%,2%)}}
+.intro .ln{position:relative;font-size:clamp(14px,2vw,18px);letter-spacing:.12em;min-height:1.6em;text-align:center;padding:0 20px}
+.intro .bar{position:relative;width:min(420px,72vw);height:4px;background:rgba(155,227,143,.15);overflow:hidden}
+.intro .bar i{position:absolute;inset:0;transform-origin:left;transform:scaleX(var(--p,0));background:linear-gradient(90deg,var(--pda),var(--gold2))}
+.intro .sig{position:relative;font-size:12px;color:#5f7f59;letter-spacing:.2em}
+.intro .skip{position:absolute;bottom:22px;font-size:12px;color:#5f7f59}
+.intro.out{animation:introOut .7s cubic-bezier(.7,0,.3,1) forwards}
+@keyframes introOut{0%{clip-path:inset(0)}30%{clip-path:inset(0 0 52% 0);transform:translateX(-14px)}55%{clip-path:inset(48% 0 0 0);transform:translateX(18px)}100%{clip-path:inset(50% 0 50% 0);opacity:0}}
+
+/* --- шапка --- */
+header{background:rgba(7,6,6,.55);border-bottom-color:rgba(255,90,60,.18)}
+header.solid{background:rgba(7,6,6,.9)}
+
+/* --- первый экран --- */
+.hero2{position:relative;min-height:max(100vh,680px);overflow:hidden;display:flex;align-items:center;padding:110px max(5vw,16px) 60px}
+.h-back{position:absolute;inset:auto 0 0 0;height:42%;background:url(img/hero/ground.webp) center 85%/cover no-repeat;filter:blur(18px) brightness(.55) saturate(.9);transform:scale(1.15);z-index:0}
+.h-scene{position:absolute;bottom:0;right:max(2vw,0px);height:min(92vh,980px);aspect-ratio:941/1071;z-index:1;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%)}
+.h-scene img{position:absolute;display:block;max-width:none;will-change:transform}
+.h-ground{left:0;top:0;width:100%;height:100%}
+.h-soldier{left:19.34%;top:2.71%;width:46.87%;height:86.84%;filter:drop-shadow(0 0 18px rgba(0,0,0,.35))}
+.h-rim{position:absolute;left:19.34%;top:2.71%;width:46.87%;height:86.84%;pointer-events:none;background:linear-gradient(200deg,rgba(255,80,50,.55),transparent 45%);-webkit-mask:url(img/hero/soldier.webp) center/100% 100% no-repeat;mask:url(img/hero/soldier.webp) center/100% 100% no-repeat;mix-blend-mode:screen;opacity:calc(.1 + var(--flash,0)*.8)}
+.fog{position:absolute;left:-20%;right:-20%;height:26%;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 30% 50%,rgba(210,160,145,.26),transparent 60%),radial-gradient(ellipse at 75% 40%,rgba(210,160,145,.2),transparent 55%);filter:blur(10px);animation:fog 26s ease-in-out infinite alternate}
+.fog.f1{bottom:36%}.fog.f2{bottom:6%;opacity:.55;animation-duration:34s;animation-direction:alternate-reverse}
+@keyframes fog{to{transform:translateX(9%)}}
+#embers{position:absolute;inset:0;z-index:3;pointer-events:none;width:100%;height:100%}
+.h-shade{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(7,6,6,.82) 0%,rgba(7,6,6,.45) 38%,transparent 62%),linear-gradient(0deg,#070606 0%,transparent 22%)}
+.h-content{position:relative;z-index:4;max-width:600px}
+.h-content .logo{width:min(560px,100%);filter:drop-shadow(0 8px 30px rgba(0,0,0,.85))}
+.h-content .tag{font-size:clamp(18px,2vw,22px);color:#f1e9e2;margin:20px 0 0;text-shadow:0 2px 12px #000}
+.hero2 .pda{margin-top:28px;max-width:460px;background:rgba(10,6,6,.62);border-color:rgba(255,120,90,.28);backdrop-filter:blur(6px)}
+.hero2 .pda i{border-color:var(--warn)}
+.hero2 .cdg div{border-color:rgba(255,120,90,.25);background:rgba(255,80,50,.05)}
+.hero2 .cdg span,.hero2 .pda .r{color:#d79a8c}
+.hint{position:absolute;z-index:4;left:50%;bottom:18px;transform:translateX(-50%);font:12px var(--mono);letter-spacing:.2em;color:#d79a8c;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.85}
+.hint i{width:1px;height:38px;background:linear-gradient(#ff8a6a,transparent);animation:drop 1.8s ease-in-out infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.strike{position:absolute;z-index:4;right:3vw;bottom:22px;font:12px var(--mono);color:#b67d70;letter-spacing:.08em}
+@media(max-width:900px){
+  .hero2{flex-direction:column;align-items:stretch;padding:92px 16px 0;min-height:0}
+  .h-content{order:1}
+  .h-scene{order:2;position:relative;right:auto;bottom:auto;align-self:center;height:min(66vh,600px);margin-top:-2vh;-webkit-mask-image:linear-gradient(0deg,transparent 0,#000 12%,#000 88%,transparent);mask-image:linear-gradient(0deg,transparent 0,#000 12%,#000 88%,transparent)}
+  .h-back{height:36%}
+  .h-shade{background:linear-gradient(180deg,rgba(7,6,6,.7) 0%,transparent 45%),linear-gradient(0deg,#070606 0%,transparent 12%)}
+  .fog.f1{bottom:30%}.hint{display:none}
+  .strike{display:none}
+}
+
+/* --- бегущая строка --- */
+.ticker{position:relative;z-index:1;overflow:hidden;border-block:1px solid rgba(255,90,60,.35);background:linear-gradient(90deg,#3a0806,#7a120c 50%,#3a0806);color:#ffd9cf;font:15px var(--hd);letter-spacing:.12em;white-space:nowrap}
+.ticker .tr{display:inline-flex;gap:0;padding:12px 0;animation:tick 38s linear infinite}
+.ticker span{padding:0 28px}.ticker span::after{content:"☢";margin-left:56px;color:#ffb199}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* --- разделы поверх неба --- */
+.band{background:rgba(9,8,7,.9);overflow:hidden}
+.band.alt{background:rgba(15,13,11,.9)}
+.band::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#ff6a4a 30%,#ffd28a 50%,#ff6a4a 70%,transparent);transform:scaleX(0);transition:transform 1.2s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 18px #ff4a2a}
+.band.seen::before{transform:scaleX(1)}
+.band::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 0%,rgba(255,60,30,.0) 30%,rgba(255,70,40,.22) 48%,rgba(255,200,160,.28) 50%,rgba(255,70,40,.22) 52%,transparent 70%);transform:translateX(-100%)}
+.band.seen::after{animation:wave 1.6s cubic-bezier(.4,0,.2,1) .05s 1 both}
+@keyframes wave{to{transform:translateX(100%)}}
+.kick{color:#ff9b80}.kick::before{background:#ff6a4a;box-shadow:0 0 10px #ff6a4a}
+h2.gl{position:relative}
+h2.gl.go{animation:glit .6s steps(2) 1}
+@keyframes glit{0%{text-shadow:3px 0 #ff2a2a,-3px 0 #2ad4ff;transform:skewX(-6deg)}40%{text-shadow:-4px 0 #ff2a2a,4px 0 #2ad4ff;transform:skewX(4deg)}100%{text-shadow:none;transform:none}}
+.fc,.bc,.un,.ar,.ty,.md,.rq,.dlist li,.ms li{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s}
+.tilt{transform-style:preserve-3d;will-change:transform}
+.tilt:hover{box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 1px rgba(255,120,90,.35)}
+.rv{opacity:0;transform:translateY(34px)}
+.rv.on{opacity:1;transform:none;transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+.gold{background:linear-gradient(180deg,#ffd76a,#d4ac1c);position:relative;overflow:hidden}
+.gold::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:shine 4.5s ease-in-out infinite}
+@keyframes shine{0%,70%{left:-60%}100%{left:130%}}
+footer{background:#050404}
+@media(prefers-reduced-motion:reduce){.intro{display:none}.rv{opacity:1;transform:none}.band::after,.ticker .tr,.fog{animation:none}}
+
+
+.h-photo{position:absolute;inset:-3%;z-index:0;will-change:transform}
+.h-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;max-width:none}
+.ph-calm{filter:sepia(.35) contrast(1.05) brightness(.62);transition:opacity .12s steps(2)}
+.ph-ruin{opacity:0;filter:contrast(1.15) saturate(1.1);transition:opacity .12s steps(2)}
+.hero2.storm .ph-calm{opacity:0}
+.hero2.storm .ph-ruin{opacity:1}
+.hero2.storm .h-photo{animation:quake .42s linear 1}
+@keyframes quake{0%{transform:translate(0,0) scale(1.02)}15%{transform:translate(-14px,8px) scale(1.04)}30%{transform:translate(12px,-10px) scale(1.035)}45%{transform:translate(-9px,6px) scale(1.03)}60%{transform:translate(7px,-4px)}80%{transform:translate(-3px,2px)}100%{transform:translate(0,0)}}
+.hero2.gl .h-photo{animation:slice .16s steps(1) 1}
+@keyframes slice{0%{clip-path:inset(0 0 62% 0);transform:translateX(-22px);filter:hue-rotate(-20deg) saturate(2)}25%{clip-path:inset(38% 0 30% 0);transform:translateX(26px)}50%{clip-path:inset(70% 0 0 0);transform:translateX(-12px)}75%{clip-path:inset(12% 0 50% 0);transform:translateX(16px)}100%{clip-path:inset(0);transform:none}}
+.hero2.storm .h-shade{background:linear-gradient(90deg,rgba(7,6,6,.78) 0%,rgba(7,6,6,.3) 38%,transparent 62%),linear-gradient(0deg,#070606 0%,transparent 22%)}
+.hero2.storm .tag{text-shadow:0 0 18px rgba(255,60,30,.6),0 2px 12px #000}
+.hero2.storm .logo{filter:drop-shadow(0 0 22px rgba(255,60,30,.55)) drop-shadow(0 8px 30px rgba(0,0,0,.85))}
+@media(max-width:900px){.hero2{min-height:max(100svh,700px)}.h-content{order:0}.h-photo{inset:0}.h-photo img{object-position:38% 40%}.h-shade{background:linear-gradient(180deg,rgba(7,6,6,.7) 0%,rgba(7,6,6,.3) 55%,rgba(7,6,6,.6) 100%)}}
+#hgl{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .6s}
+.hero2.webgl #hgl{opacity:1}
+.hero2.webgl .h-photo{inset:0}
+.hero2.webgl.storm .h-photo,.hero2.webgl.gl .h-photo{animation:none}
+.hero2.webgl .ph-calm,.hero2.webgl .ph-ruin{opacity:0!important;transition:none}
 .side .pic .locked{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;color:var(--gold2);
 background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transparent 14px 28px),radial-gradient(circle at 50% 45%,#1d1a12,#0a0b08 75%)}
 .side .pic .locked::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px);pointer-events:none}
@@ -255,6 +363,10 @@ background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transpar
 </style>
 </head>
 <body>
+<div class="intro" id="intro" data-lines="ПОДКЛЮЧЕНИЕ К СЕТИ ЗОНЫ…|ПОИСК СИГНАЛА…|ДИТЯТКИ · 2013|ВНИМАНИЕ: ПРИБЛИЖАЕТСЯ ВЫБРОС" role="presentation">
+  <div class="sig">КПК · СЕТЬ ЗОНЫ</div><div class="ln"></div><div class="bar"><i></i></div><div class="skip">нажмите, чтобы пропустить</div>
+</div>
+<canvas id="sky" aria-hidden="true"></canvas><div class="flash" aria-hidden="true"></div><div class="cglow" aria-hidden="true"></div>
 <header>
   <div class="hd">
     <a class="lg" href="#top" aria-label="Зона резонанса — наверх"><img src="img/logo.webp" alt="Зона резонанса" width="120" height="36"></a>
@@ -269,17 +381,22 @@ background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transpar
 </header>
 
 <main id="top">
-<section class="hero">
-  <div class="ph" aria-hidden="true"></div><div class="scan" aria-hidden="true"></div>
-  <div class="in">
-    <div>
-      <h1>Зона резонанса</h1>
-      <img class="logo" src="img/logo.webp" alt="" width="1367" height="411">
-      <p class="tag" data-t="tag">Стратегия в реальном времени в Зоне отчуждения. Три фракции, мутанты, артефакты — и Выброс, который сжигает всех, кто не успел в укрытие.</p>
-      <div class="ctas">
-        <a class="btn gold" href="#demo" data-t="cta1">ДЕМО-ВЕРСИЯ</a>
-        <button class="btn ghost" id="trl"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg><span data-t="cta2">Трейлер</span></button>
-      </div>
+<section class="hero2" aria-label="Зона резонанса">
+  <div class="h-photo" aria-hidden="true">
+    <img class="ph-calm" src="img/photo_bg3.webp" alt="" width="1920" height="1080">
+    <img class="ph-ruin" src="img/hero/ruin.webp" alt="" width="1920" height="1080">
+    <canvas id="hgl"></canvas>
+  </div>
+  <div class="fog f1" aria-hidden="true"></div><div class="fog f2" aria-hidden="true"></div>
+  <canvas id="embers" aria-hidden="true"></canvas>
+  <div class="h-shade" aria-hidden="true"></div>
+  <div class="h-content">
+    <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Зона резонанса</h1>
+    <img class="logo" src="img/logo.webp" alt="" width="1367" height="411">
+    <p class="tag" data-t="tag">Стратегия в реальном времени в Зоне отчуждения. Три фракции, мутанты, артефакты — и Выброс, который сжигает всех, кто не успел в укрытие.</p>
+    <div class="ctas">
+      <a class="btn gold" href="#demo" data-t="cta1">ДЕМО-ВЕРСИЯ</a>
+      <button class="btn ghost" id="trl"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg><span data-t="cta2">Трейлер</span></button>
     </div>
     <div class="pda" aria-live="polite">
       <i></i><i></i><i></i><i></i>
@@ -289,7 +406,10 @@ background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transpar
       <a class="emit" href="#demo" data-t="emit">ЧТО БУДЕТ В ДЕМО ↓</a>
     </div>
   </div>
+  <div class="strike" data-t="strike">кликните — вызовите Выброс</div>
+  <div class="hint" aria-hidden="true"><span data-t="scroll">ВНИЗ</span><i></i></div>
 </section>
+<div class="ticker" aria-hidden="true"><div class="tr"><span data-t="tk1">ВНИМАНИЕ: ВЫБРОС</span><span data-t="tk2">НАЙДИТЕ УКРЫТИЕ</span><span data-t="tk3">ДЕМО-ВЕРСИЯ — 1 ДЕКАБРЯ</span><span data-t="tk4">ТРИ ФРАКЦИИ · ОДНА ЗОНА</span><span data-t="tk5">11 ЛОКАЦИЙ ОТ ДИТЯТОК ДО ЧАЭС</span><span data-t="tk1">ВНИМАНИЕ: ВЫБРОС</span><span data-t="tk2">НАЙДИТЕ УКРЫТИЕ</span><span data-t="tk3">ДЕМО-ВЕРСИЯ — 1 ДЕКАБРЯ</span><span data-t="tk4">ТРИ ФРАКЦИИ · ОДНА ЗОНА</span><span data-t="tk5">11 ЛОКАЦИЙ ОТ ДИТЯТОК ДО ЧАЭС</span></div></div>
 
 <section class="band" id="demo">
   <div class="wrap demo">
@@ -548,7 +668,7 @@ k8:'Modes and shots',mdh:'Your own Zone in every match',m1:'Skirmish',m1d:'1v1 o
 m2:'Online',m2d:'Two players against each other, or together against two AI opponents.',m2a:'over LAN',m2b:'the host\'s computer runs the game',m2c:'in development for the demo',
 k9:'Devlog',lv:'Demo update',ld:'22 November 2026',lp:'Demo update: Domination and Stronghold match types, Zone events — Distress signal and Rut in the fog, map shots in the PDA with base position choice, new mutant textures, windowed mode. The game is made by one person in Godot and is being prepared for Steam.',lig:'News and reels on Instagram @resonancezone →',
 sb:'Notify me at launch',sl:'Email for news and the release date',sbt:'SUBSCRIBE',up:'Back to top ↑',copy:'© 2026 Resonance Zone',
-bt:'WARNING! EMISSION',bs:'Everyone outside shelter will die.',k10:'System requirements',rqh:'Will it run',rq_min:'Minimum',rq_rec:'Recommended',rl_os:'OS',rv_min_os:'Windows 10 64-bit',rv_rec_os:'Windows 10/11 64-bit',rl_cpu:'Processor',rv_min_cpu:'4 cores, 3.0 GHz (Intel Core i5-4590 / AMD Ryzen 3 1200)',rv_rec_cpu:'6 cores, 3.5 GHz (Intel Core i5-9600K / AMD Ryzen 5 3600)',rl_ram:'Memory',rv_min_ram:'8 GB RAM',rv_rec_ram:'16 GB RAM',rl_gpu:'Graphics',rv_min_gpu:'Vulkan 1.1 or DirectX 12 support, 2 GB VRAM (NVIDIA GeForce GTX 960 / AMD Radeon RX 460)',rv_rec_gpu:'4–6 GB VRAM (NVIDIA GeForce GTX 1660 / AMD Radeon RX 5600 XT)',rl_hdd:'Storage',rv_min_hdd:'1 GB',rv_rec_hdd:'1 GB',rl_add:'Additional',rv_min_add:'1280×720 resolution; low graphics settings',rv_rec_add:'1920×1080 resolution; medium to high settings',tt:'The trailer is in the works',tp:'Until then, watch the gameplay in our reels.',kt:'Match type · new',ty1:'Battle',ty1d:'The classic: destroy the enemy base to win.',ty2:'Domination',ty2d:'Hold points A, B and C — each one scores. A point takes 20 seconds to capture. First to 300 points wins.',
+bt:'WARNING! EMISSION',bs:'Everyone outside shelter will die.',k10:'System requirements',rqh:'Will it run',rq_min:'Minimum',rq_rec:'Recommended',rl_os:'OS',rv_min_os:'Windows 10 64-bit',rv_rec_os:'Windows 10/11 64-bit',rl_cpu:'Processor',rv_min_cpu:'4 cores, 3.0 GHz (Intel Core i5-4590 / AMD Ryzen 3 1200)',rv_rec_cpu:'6 cores, 3.5 GHz (Intel Core i5-9600K / AMD Ryzen 5 3600)',rl_ram:'Memory',rv_min_ram:'8 GB RAM',rv_rec_ram:'16 GB RAM',rl_gpu:'Graphics',rv_min_gpu:'Vulkan 1.1 or DirectX 12 support, 2 GB VRAM (NVIDIA GeForce GTX 960 / AMD Radeon RX 460)',rv_rec_gpu:'4–6 GB VRAM (NVIDIA GeForce GTX 1660 / AMD Radeon RX 5600 XT)',rl_hdd:'Storage',rv_min_hdd:'1 GB',rv_rec_hdd:'1 GB',rl_add:'Additional',rv_min_add:'1280×720 resolution; low graphics settings',rv_rec_add:'1920×1080 resolution; medium to high settings',strike:'click to trigger the Emission',scroll:'SCROLL',tk1:'WARNING: EMISSION',tk2:'FIND SHELTER',tk3:'DEMO — DECEMBER 1',tk4:'THREE FACTIONS · ONE ZONE',tk5:'11 LOCATIONS FROM DITYATKI TO THE CHNPP',tt:'The trailer is in the works',tp:'Until then, watch the gameplay in our reels.',kt:'Match type · new',ty1:'Battle',ty1d:'The classic: destroy the enemy base to win.',ty2:'Domination',ty2d:'Hold points A, B and C — each one scores. A point takes 20 seconds to capture. First to 300 points wins.',
 ty3:'Stronghold',ty3d:'A single point that moves every 2 minutes; the next one is marked on the map 20 seconds ahead. First to 250 wins.',
 tyn:'Match length: short, normal or long. Domination and Stronghold are on 2v2 maps (Chistogalovka and Rassokha in the demo). Destroying the enemy base still wins.',
 ke:'Zone events · new',ev1:'Distress signal',ev1d:'Stalkers are fighting off mutants at a marked spot. You have 2:30: save them and they join your squad. Fail, and the enemy may get them — or only their stash is left.',
@@ -728,6 +848,264 @@ $('#sub').onsubmit=e=>{e.preventDefault();$('#ok').textContent=UI[lang].sent};
 let saved='ru';try{saved=localStorage.getItem('zr-lang')||'ru'}catch(e){}
 setLang(saved==='en'?'en':'ru');
 }
+</script>
+<script>
+/* ===== Первый экран: фото ЧАЭС + Выброс в WebGL ===== */
+const HG=(()=>{
+const cvs=document.getElementById('hgl');if(!cvs)return null;
+let g=null;try{g=cvs.getContext('webgl',{antialias:false,premultipliedAlpha:false})}catch(e){}
+if(!g)return null;
+const FS=`precision highp float;
+uniform sampler2D P,K;uniform vec2 R,IR,M,BA,BB,SW,SH;uniform float T,ST,GL,FL,BT,SWT,SEED,SC;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fb(vec2 p){float v=0.,a=.5;for(int i=0;i<6;i++){v+=a*n(p);p=mat2(1.6,1.2,-1.2,1.6)*p+vec2(3.1,7.7);a*=.5;}return v;}
+float lum(vec3 c){return dot(c,vec3(.299,.587,.114));}
+float bolt(vec2 p,vec2 a,vec2 b,float s,float core){
+  float k=(p.y-a.y)/(b.y-a.y);if(k<0.||k>1.)return 0.;
+  float x=mix(a.x,b.x,k)+(fb(vec2(k*4.,s))-.5)*.18*sin(k*3.1416)+(n(vec2(k*46.,s*3.))-.5)*.022+(n(vec2(k*140.,s))-.5)*.006;
+  float d=abs(p.x-x);return core/(d*d*4e4+1.)+core*.012/(d+.004);}
+vec2 cover(vec2 u){float sa=R.x/R.y,ia=IR.x/IR.y;vec2 c=u-.5;if(sa>ia)c.y*=ia/sa;else c.x*=sa/ia;return c/1.06+.5+vec2(0.,.03);}
+void main(){
+  vec2 u=gl_FragCoord.xy/R;float asp=R.x/R.y;
+  vec2 su=u+SH;
+  // глитч: горизонтальные срезы
+  if(GL>0.){float row=floor(u.y*28.);float r=h(vec2(row,floor(T*40.)));if(r<GL*.6)su.x+=(r-.3)*.09*GL;}
+  // ударная волна от точки удара
+  float dt=T-SWT;vec2 dv=(u-SW)*vec2(asp,1.);float dd=length(dv);
+  float ring=dt>0.?exp(-pow((dd-dt*1.6)*22.,2.))*exp(-dt*2.6):0.;
+  su+=normalize(dv+1e-5)/vec2(asp,1.)*ring*.009;
+  vec2 q=cover(su)+(M-.5)*vec2(-.012,.008);
+  vec4 k=texture2D(K,q);float sky=k.r,crk=k.g;
+  // дрейф облаков на фото
+  vec2 w=vec2(fb(q*3.+vec2(T*.03,0.)),fb(q*3.+vec2(5.,T*.02)))-.5;
+  vec2 qs=q+w*.012*sky;
+  // марево над землёй во время Выброса
+  qs.x+=(n(vec2(q.x*55.,q.y*70.-T*4.))-.5)*.003*ST*smoothstep(.5,.05,q.y)*(1.-sky);
+  float ca=.0004+ST*.0018+GL*.01+ring*.006;
+  vec3 ph=vec3(texture2D(P,qs+vec2(ca,0.)).r,texture2D(P,qs).g,texture2D(P,qs-vec2(ca,0.)).b);
+  float L=lum(ph);
+  // спокойная картинка: тёплый выцветший тон
+  vec3 calm=mix(vec3(L),ph,.35)*vec3(1.08,.98,.84);
+  calm=(calm-.5)*1.08+.5;calm*=.66;
+  // --- Выброс ---
+  vec2 p=vec2(u.x*asp,u.y);
+  vec2 cw=vec2(fb(p*2.2+vec2(T*.12,-T*.05)),fb(p*2.2+vec2(4.,T*.09)));
+  float c=fb(p*vec2(2.4,3.6)+cw*2.2+vec2(-T*.05,0.));
+  vec3 stSky=mix(vec3(.05,0.,.004),vec3(.62,.05,.03),smoothstep(.25,.85,c));
+  stSky+=vec3(1.,.42,.22)*pow(c,6.)*2.2;
+  stSky=mix(stSky,stSky*.3+vec3(1.55,.3,.14)*pow(L,1.5)*1.7,.7);stSky*=.8+.5*smoothstep(.2,.9,u.y*.5+c*.6);           // реальные облака с фото, перекрашенные
+  stSky+=vec3(.7,.12,.06)*smoothstep(.65,.0,u.y)*.25;
+  float G=pow(L,1.12);
+  vec3 bld=G*vec3(1.4,.62,.46)+G*G*vec3(.7,.2,.1);
+  float up=texture2D(K,q+vec2(0.,.0035)).r;float rim=clamp(up-sky,0.,1.);rim*=rim;
+  bld+=vec3(1.,.32,.12)*rim*(.6+FL*1.8);
+  bld*=.84+.16*fb(q*vec2(60.,44.));
+  float fl=.55+.45*sin(T*23.+q.x*60.)*n(vec2(T*7.,q.y*20.));
+  float cs=smoothstep(.55,1.,ST);bld+=(vec3(1.,.5,.16)*fl*1.3+vec3(1.,.22,.05)*.4)*crk*cs;
+  bld+=vec3(.6,.14,.03)*smoothstep(.36,.0,q.y)*(.55+.45*n(vec2(T*4.,q.x*6.)));
+  vec3 st=mix(bld,stSky,sky);
+  float sm=fb(vec2(q.x*3.5+T*.04,q.y*2.6-T*.22)+cw);
+  float sa=smoothstep(.55,.8,sm)*smoothstep(.02,.35,q.y)*smoothstep(.95,.45,q.y)*.3;
+  st=mix(st,vec3(.07,.02,.015)+vec3(.45,.09,.04)*(1.-q.y)*.6,sa);
+  // молнии: уходят за здания
+  float e=exp(-(T-BT)*6.)*step(BT,T)*(.7+.3*sin((T-BT)*70.));
+  if(e>.002){vec2 a=vec2(BA.x*asp,BA.y),b=vec2(BB.x*asp,BB.y);
+    float l=bolt(p,a,b,SEED,1.)+.5*bolt(p,a+vec2(.03,0.),mix(a,b,.55)+vec2(.16,-.06),SEED+4.,.6)+.4*bolt(p,mix(a,b,.35),mix(a,b,.7)+vec2(-.14,.03),SEED+9.,.5);
+    float occ=mix(.15,1.,sky);
+    st+=vec3(1.,.86,.82)*min(l,8.)*e*occ;
+    float bl=exp(-length(p-b)*7.)*e;st+=vec3(1.,.5,.35)*bl*(sky*.7+.25*G);}
+  st+=FL*mix(vec3(.25,.05,.03)+G*vec3(1.,.6,.5),vec3(.6,.15,.1),sky);
+  st+=vec3(1.,.55,.4)*ring*.18*sky;
+  vec3 col=mix(calm,st,ST);
+  // финиш: свечение ярких зон, виньетка, зерно, строки
+  col+=pow(max(col-.6,0.),vec3(2.))*.6;
+  float v=1.-.55*dot((u-.5)*vec2(1.,.9),(u-.5)*vec2(1.,.9))*2.;
+  col*=v;col*=1.-SC*.5;
+  col+=(h(gl_FragCoord.xy+fract(T)*97.)-.5)*(.018+ST*.012);
+  col*=.985+.015*sin(gl_FragCoord.y*1.6);
+  gl_FragColor=vec4(col,1.);}`;
+const VS='attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+function sh(t,s){const o=g.createShader(t);g.shaderSource(o,s);g.compileShader(o);if(!g.getShaderParameter(o,g.COMPILE_STATUS)){console.warn(g.getShaderInfoLog(o));return null}return o}
+const pr=g.createProgram();const v=sh(g.VERTEX_SHADER,VS),f=sh(g.FRAGMENT_SHADER,FS);if(!v||!f)return null;
+g.attachShader(pr,v);g.attachShader(pr,f);g.linkProgram(pr);if(!g.getProgramParameter(pr,g.LINK_STATUS))return null;
+g.useProgram(pr);const bf=g.createBuffer();g.bindBuffer(g.ARRAY_BUFFER,bf);g.bufferData(g.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),g.STATIC_DRAW);
+const al=g.getAttribLocation(pr,'a');g.enableVertexAttribArray(al);g.vertexAttribPointer(al,2,g.FLOAT,false,0,0);
+const U={};['P','K','R','IR','M','BA','BB','SW','SH','T','ST','GL','FL','BT','SWT','SEED','SC'].forEach(x=>U[x]=g.getUniformLocation(pr,x));
+let ready=0;
+function tex(unit,src,cb){const t=g.createTexture();const im=new Image();im.onload=()=>{g.activeTexture(g.TEXTURE0+unit);g.bindTexture(g.TEXTURE_2D,t);
+  g.pixelStorei(g.UNPACK_FLIP_Y_WEBGL,true);g.texImage2D(g.TEXTURE_2D,0,g.RGB,g.RGB,g.UNSIGNED_BYTE,im);
+  [g.TEXTURE_WRAP_S,g.TEXTURE_WRAP_T].forEach(p=>g.texParameteri(g.TEXTURE_2D,p,g.CLAMP_TO_EDGE));
+  g.texParameteri(g.TEXTURE_2D,g.TEXTURE_MIN_FILTER,g.LINEAR);g.texParameteri(g.TEXTURE_2D,g.TEXTURE_MAG_FILTER,g.LINEAR);cb&&cb(im);ready++};im.src=src}
+let IR=[1920,1080];
+tex(0,'img/photo_bg3.webp',im=>{IR=[im.naturalWidth,im.naturalHeight]});tex(1,'img/hero/mask.webp');
+g.uniform1i(U.P,0);g.uniform1i(U.K,1);
+const S={st:0,gl:0,fl:0,bt:-99,ba:[.5,1.1],bb:[.5,.6],swt:-99,sw:[.5,.5],seed:1,shake:0};
+function size(scale){const w=cvs.clientWidth,h=cvs.clientHeight;cvs.width=Math.max(2,Math.round(w*scale));cvs.height=Math.max(2,Math.round(h*scale));g.viewport(0,0,cvs.width,cvs.height)}
+function draw(t,mx,my,sc){if(ready<2)return false;
+  const sx=(Math.random()-.5)*S.shake*.02,sy=(Math.random()-.5)*S.shake*.015;
+  g.uniform2f(U.R,cvs.width,cvs.height);g.uniform2f(U.IR,IR[0],IR[1]);g.uniform2f(U.M,mx,my);
+  g.uniform2f(U.BA,S.ba[0],S.ba[1]);g.uniform2f(U.BB,S.bb[0],S.bb[1]);g.uniform2f(U.SW,S.sw[0],S.sw[1]);g.uniform2f(U.SH,sx,sy);
+  g.uniform1f(U.T,t);g.uniform1f(U.ST,S.st);g.uniform1f(U.GL,S.gl);g.uniform1f(U.FL,S.fl);g.uniform1f(U.BT,S.bt);g.uniform1f(U.SWT,S.swt);g.uniform1f(U.SEED,S.seed);g.uniform1f(U.SC,sc);
+  g.drawArrays(g.TRIANGLES,0,3);return true}
+return {S,size,draw,get ok(){return ready>=2}};
+})();
+
+/* ===== Вариант «Выброс»: небо WebGL, заставка, параллакс, переходы ===== */
+{
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const mob=matchMedia('(max-width:900px),(pointer:coarse)').matches;
+const calm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const root=document.documentElement;
+
+/* ---------- заставка ---------- */
+(()=>{
+  const el=$('#intro');if(!el)return;
+  let seen=false;try{seen=sessionStorage.getItem('zr-intro')==='1'}catch(e){}
+  if(seen||calm){el.remove();return}
+  const lines=el.dataset.lines.split('|');const ln=el.querySelector('.ln');let i=0,done=false;
+  const t0=performance.now(),DUR=2600;
+  function step(now){if(done)return;const p=Math.min(1,(now-t0)/DUR);el.style.setProperty('--p',p);
+    const k=Math.min(lines.length-1,Math.floor(p*lines.length));if(k!==i||!ln.textContent){i=k;ln.textContent=lines[k]}
+    if(p<1)requestAnimationFrame(step);else finish()}
+  function finish(){if(done)return;done=true;try{sessionStorage.setItem('zr-intro','1')}catch(e){}
+    el.classList.add('out');strike(.5,.32,1);setTimeout(()=>el.remove(),720)}
+  el.addEventListener('click',finish);addEventListener('keydown',finish,{once:true});
+  requestAnimationFrame(step);
+})();
+
+/* ---------- WebGL небо ---------- */
+const cv=$('#sky');let gl=null;
+try{gl=cv.getContext('webgl',{antialias:false,alpha:false,powerPreference:'low-power'})}catch(e){}
+const FS=`precision mediump float;
+uniform vec2 R;uniform float T,S,FL,BT,SEED;uniform vec2 BA,BB,M;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fb(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+float bolt(vec2 p,vec2 a,vec2 b,float s,float w){
+  float k=(p.y-a.y)/(b.y-a.y);if(k<0.||k>1.)return 0.;
+  float x=mix(a.x,b.x,k)+(fb(vec2(k*5.,s))-.5)*.22*sin(k*3.1416)+(n(vec2(k*38.,s*3.))-.5)*.035;
+  float d=abs(p.x-x);return w/(d+.0025)*smoothstep(1.,.85,k);}
+void main(){
+  vec2 uv=gl_FragCoord.xy/R;float asp=R.x/R.y;vec2 p=vec2(uv.x*asp,uv.y);
+  float y=uv.y+S*.55;
+  vec2 q=p*vec2(1.6,2.6)+vec2(T*.018,-T*.01);
+  vec2 w=vec2(fb(q+T*.03),fb(q+vec2(5.2,1.3)-T*.02));
+  float c=fb(q+w*1.7+M*.15);
+  vec3 top=vec3(.10,.01,.015),mid=vec3(.52,.05,.04),hor=vec3(.86,.22,.12);
+  vec3 col=mix(top,mid,smoothstep(1.05,.45,y));col=mix(col,hor,smoothstep(.55,.18,y)*.8);
+  col*=.55+c*.95;col+=vec3(.9,.25,.15)*pow(c,4.)*1.3;
+  vec2 g=vec2(.62*asp,.44-S*.55);float gd=length((p-g)*vec2(1.,1.3));
+  float pulse=.75+.25*sin(T*1.7)+FL*.9;
+  col+=vec3(1.,.55,.4)*exp(-gd*gd*90.)*pulse*.9+vec3(.9,.2,.1)*exp(-gd*3.)*.35*pulse;
+  float e=exp(-(T-BT)*5.5)*step(BT,T)*(.75+.25*sin((T-BT)*60.));
+  if(e>.003){vec2 a=vec2(BA.x*asp,BA.y),b=vec2(BB.x*asp,BB.y);
+    float l=bolt(p,a,b,SEED,.0016)+bolt(p,a+vec2(.02,0.),mix(a,b,.55)+vec2(.18,-.05),SEED+4.,.0007)+bolt(p,mix(a,b,.3),mix(a,b,.6)+vec2(-.15,.02),SEED+9.,.0005);
+    col+=vec3(1.,.8,.75)*min(l,6.)*e;col+=vec3(.6,.12,.08)*e*.35;}
+  col*=1.-S*.55;col=mix(col,vec3(dot(col,vec3(.3,.5,.2))),.08);
+  col+=(h(gl_FragCoord.xy+T)-.5)*.025;
+  gl_FragColor=vec4(col,1.);}`;
+let U={},prog,scale=mob?.45:.75,start=performance.now();
+const B={t:-99,a:[.5,1.1],b:[.5,.5],seed:1};
+function strike(x,y,big){B.t=(performance.now()-start)/1000;B.b=[x,1-y];B.a=[x+(Math.random()-.5)*.5,1.15];B.seed=Math.random()*50;
+  root.style.setProperty('--fx',(x*100)+'%');root.style.setProperty('--fy',(y*100)+'%');flash(big?1:.6)}
+let fl=0;function flash(v){fl=Math.max(fl,v)}
+if(gl){
+  const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o};
+  prog=gl.createProgram();gl.attachShader(prog,sh(gl.VERTEX_SHADER,'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}'));
+  gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);
+  if(!gl.getProgramParameter(prog,gl.LINK_STATUS)){gl=null}else{
+    gl.useProgram(prog);const bf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,bf);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+    const loc=gl.getAttribLocation(prog,'a');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+    ['R','T','S','FL','BT','SEED','BA','BB','M'].forEach(k=>U[k]=gl.getUniformLocation(prog,k));}
+}
+function size(){const w=innerWidth,h=innerHeight;cv.width=Math.max(2,Math.round(w*scale));cv.height=Math.max(2,Math.round(h*scale));if(gl)gl.viewport(0,0,cv.width,cv.height)}
+size();addEventListener('resize',size);
+let mx=.5,my=.5,smx=.5,smy=.5,last=0,nextBolt=2.5,nowT=0,stT=0;
+const HS=()=>HG&&HG.size(mob?Math.min(devicePixelRatio||1,2)*.55:Math.min(devicePixelRatio||1,1.6));HS();addEventListener('resize',HS);
+function frame(now){
+  const t=(now-start)/1000;
+  if(mob&&now-last<33){requestAnimationFrame(frame);return}last=now;
+  smx+=(mx-smx)*.05;smy+=(my-smy)*.05;
+  const s=Math.min(1,scrollY/innerHeight);
+  if(t>nextBolt){strike(.25+Math.random()*.6,.12+Math.random()*.25,false);nextBolt=t+(mob?6:3.5)+Math.random()*4}
+  fl*=.9;root.style.setProperty('--flash',fl.toFixed(3));
+  const dtS=Math.min(.1,t-nowT);nowT=t;let heroDrawn=false;
+  if(HG&&s<1){const H=HG.S;H.st+=(stT-H.st)*(1-Math.exp(-dtS*(stT>H.st?22:7)));H.gl*=Math.exp(-dtS*11);H.fl*=Math.exp(-dtS*6);H.shake*=Math.exp(-dtS*8);heroDrawn=HG.draw(t,smx,smy,s);if(heroDrawn&&!hero.classList.contains('webgl'))hero.classList.add('webgl')}
+  if(gl&&!(heroDrawn&&s<.95)){gl.uniform2f(U.R,cv.width,cv.height);gl.uniform1f(U.T,t);gl.uniform1f(U.S,s);gl.uniform1f(U.FL,fl);
+    gl.uniform1f(U.BT,B.t);gl.uniform1f(U.SEED,B.seed);gl.uniform2f(U.BA,B.a[0],B.a[1]);gl.uniform2f(U.BB,B.b[0],B.b[1]);gl.uniform2f(U.M,smx,smy);
+    gl.drawArrays(gl.TRIANGLES,0,3)}
+  parallax(s);embers(t);
+  if(!calm)requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+
+/* ---------- мышь: свет, параллакс, удар молнии по клику ---------- */
+const glow=$('.cglow');
+addEventListener('pointermove',e=>{mx=e.clientX/innerWidth;my=e.clientY/innerHeight;
+  if(glow){root.style.setProperty('--mx',e.clientX+'px');root.style.setProperty('--my',e.clientY+'px')}},{passive:true});
+const hero=$('.hero2');
+hero&&hero.addEventListener('click',e=>{if(e.target.closest('a,button'))return;storm(e.clientX/innerWidth,e.clientY/innerHeight)});
+const PH=$('.h-photo'),HC=$('.h-content');
+function parallax(s){if(!PH)return;const dx=mob?0:(smx-.5),dy=mob?0:(smy-.5);
+  if(!hero.classList.contains('storm')&&!hero.classList.contains('webgl'))PH.style.transform=`translate(${dx*-18}px,${dy*-10+s*50}px) scale(${1.02+s*.05})`;
+  HC.style.transform=`translate(${dx*8}px,${s*-60}px)`;HC.style.opacity=1-s*1.1}
+/* Выброс на фото: раз в 2–3 с вспышка разрушения */
+let stormOn=false;
+function storm(x,y){if(stormOn||!hero)return;stormOn=true;
+  const gl2=HG&&HG.ok;
+  hero.classList.add('gl');setTimeout(()=>hero.classList.remove('gl'),170);hero.classList.add('storm');
+  if(gl2){stT=1;HG.S.gl=1;
+    const r=hero.getBoundingClientRect();
+    const hit=(px,py,big)=>{const S=HG.S;S.bt=nowT;S.seed=Math.random()*60;S.bb=[px,py];S.ba=[px+(Math.random()-.5)*.35,1.15];
+      if(big){S.swt=nowT;S.sw=[px,py];S.shake=1;S.fl=1}else S.fl=Math.max(S.fl,.6);
+      root.style.setProperty('--fx',(px*100)+'%');root.style.setProperty('--fy',((1-py)*100)+'%');flash(big?.45:.25)};
+    const px=x!=null?x:(.4+Math.random()*.45),py=y!=null?1-(y*innerHeight-r.top)/r.height:(.58+Math.random()*.2);
+    setTimeout(()=>hit(px,py,true),60);
+    setTimeout(()=>hit(.25+Math.random()*.6,.6+Math.random()*.25,false),300+Math.random()*120);
+  }else{strike(x??(.5+Math.random()*.15),y??(.12+Math.random()*.12),true)}
+  const dur=700+Math.random()*250;
+  setTimeout(()=>{stT=0;if(gl2)HG.S.gl=1;hero.classList.add('gl');setTimeout(()=>hero.classList.remove('gl'),170);hero.classList.remove('storm');stormOn=false},dur)}
+window.ZRst=v=>{stT=v};
+function loop(){if(location.hash==='#still')return;if(!calm&&!document.hidden&&scrollY<innerHeight)storm();setTimeout(loop,4000+Math.random()*1000)}
+if(!calm)setTimeout(loop,3200);
+/* ---------- искры и пепел ---------- */
+const ec=$('#embers'),ex=ec&&ec.getContext('2d');let P=[];
+function esize(){if(!ec)return;ec.width=ec.clientWidth;ec.height=ec.clientHeight;
+  P=Array.from({length:mob?36:110},()=>({x:Math.random()*ec.width,y:Math.random()*ec.height,v:.2+Math.random()*.9,r:.6+Math.random()*2.2,ph:Math.random()*6,e:Math.random()<.5}))}
+esize();addEventListener('resize',esize);
+function embers(t){if(!ex)return;ex.clearRect(0,0,ec.width,ec.height);
+  for(const p of P){p.x+=p.v*.9;p.y-=p.v*.35+Math.sin(t+p.ph)*.25;if(p.x>ec.width+10)p.x=-10;if(p.y<-10)p.y=ec.height+10;
+    const a=.35+.35*Math.sin(t*2+p.ph);ex.fillStyle=p.e?`rgba(255,${110+Math.random()*40|0},60,${a})`:`rgba(210,200,190,${a*.6})`;
+    ex.beginPath();ex.arc(p.x,p.y,p.r,0,6.283);ex.fill()}}
+
+/* ---------- шапка ---------- */
+const hd=$('header');addEventListener('scroll',()=>hd.classList.toggle('solid',scrollY>innerHeight*.6),{passive:true});
+
+/* ---------- появление разделов: волна Выброса, глитч, каскад ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const b=e.target;io.unobserve(b);
+  b.classList.add('seen');const h=b.querySelector('h2');if(h){h.classList.add('gl','go');scramble(h)}
+  if(!mob&&Math.random()<.5)flash(.25);
+  b.querySelectorAll('.rv').forEach((c,i)=>setTimeout(()=>c.classList.add('on'),120+i*70))}),{threshold:.18});
+const RV='.kick,.lead,.quote,.dlist li,.demo .shot,.fc,.cmp,.after,.tl li,.map,.side,.dos,.ms li,.tabs,.bsub>div,.arts .ar,.md,.ty,.gal button,.rq,.log,.sub,.legend';
+function prep(){if(calm)return;$$('.band').forEach(b=>{b.querySelectorAll(RV).forEach(c=>c.classList.add('rv'));io.observe(b)})}
+prep();
+const GL='АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ#%&/<>01';
+function scramble(el){if(calm||el.dataset.sc)return;el.dataset.sc=1;const fin=el.textContent;let f=0;const N=18;
+  const id=setInterval(()=>{f++;el.textContent=fin.split('').map((ch,i)=>ch===' '||i<fin.length*f/N?ch:GL[Math.random()*GL.length|0]).join('');
+    if(f>=N){clearInterval(id);el.textContent=fin;delete el.dataset.sc}},28)}
+
+/* ---------- наклон карточек ---------- */
+if(!mob&&!calm){
+  document.addEventListener('pointermove',e=>{const c=e.target.closest('.fc,.bc,.un,.ar,.ty,.md,.rq');
+    $$('.tilt').forEach(x=>{if(x!==c){x.classList.remove('tilt');x.style.transform=''}});
+    if(!c)return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    c.classList.add('tilt');c.style.transform=`perspective(900px) rotateX(${-y*7}deg) rotateY(${x*9}deg) translateY(-4px)`},{passive:true});
+}
+/* после перерисовки вкладок новые карточки сразу видимы */
+new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1&&n.matches&&n.matches('.rv'))n.classList.add('on')}))).observe(document.body,{childList:true,subtree:true});
+}
+
 </script>
 </body>
 </html>
