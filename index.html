@@ -238,6 +238,10 @@ footer{padding:36px max(5vw,16px);border-top:1px solid var(--line);background:#0
 /* modals */
 .modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,4,3,.92)}
 .modal.on{display:flex}
+.ck{position:fixed;left:16px;right:16px;bottom:16px;z-index:60;max-width:760px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:16px 18px;background:rgba(14,15,12,.96);border:1px solid var(--line);box-shadow:0 10px 40px rgba(0,0,0,.6);font-size:14px;color:var(--soft)}
+.ck[hidden]{display:none}.ck p{flex:1 1 300px;margin:0}.ck .btn{min-height:40px;padding:0 18px;font-size:14px}
+.lnk{background:none;border:0;padding:0;color:inherit;font:inherit;text-decoration:underline;cursor:pointer}
+.priv .screen{max-width:620px}.priv p{font-size:15px;line-height:1.55;color:var(--soft)}.priv .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
 .screen{position:relative;width:100%;max-width:880px;aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:#0e110d url(img/em_before.webp) center/cover;box-shadow:inset 0 0 0 2000px rgba(8,10,8,.82);border:1px solid var(--line)}
 .screen b{font:clamp(20px,3vw,30px) var(--hd);color:var(--hi)}.screen p{margin:0;color:var(--soft)}
 .x{position:absolute;top:8px;right:8px;width:44px;height:44px;background:rgba(0,0,0,.5);border:1px solid var(--line);color:var(--hi);cursor:pointer}
@@ -613,7 +617,7 @@ background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transpar
 <footer>
   <div class="ft">
     <img src="img/logo.webp" alt="Зона резонанса" width="100" height="30" loading="lazy">
-    <nav aria-label="Ссылки"><a href="https://www.instagram.com/resonancezone/">Instagram</a><a href="#top" data-t="up">Наверх ↑</a></nav>
+    <nav aria-label="Ссылки"><a href="https://www.instagram.com/resonancezone/">Instagram</a><button class="lnk" type="button" id="pvl" data-t="pvl">Конфиденциальность</button><a href="#top" data-t="up">Наверх ↑</a></nav>
     <span data-t="copy">© 2026 Зона резонанса</span>
   </div>
 </footer>
@@ -624,6 +628,22 @@ background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transpar
     <b id="mt" data-t="tt">Трейлер готовится</b>
     <p data-t="tp">Пока его нет, геймплей можно посмотреть в рилсах.</p>
     <a class="btn ghost" href="https://www.instagram.com/resonancezone/">Instagram @resonancezone</a>
+  </div>
+</div>
+<div class="ck" id="ck" role="region" aria-label="Cookie" hidden>
+  <p><span data-t="ckt">Сайт использует cookie и Яндекс Метрику, чтобы считать посещения. Статистика включится только с вашего согласия.</span> <button class="lnk" type="button" data-priv data-t="ckm">Подробнее</button></p>
+  <button class="btn gold" type="button" data-ck="1" data-t="cky">Принять</button>
+  <button class="btn ghost" type="button" data-ck="0" data-t="ckn">Отказаться</button>
+</div>
+<div class="modal priv" id="priv" role="dialog" aria-modal="true" aria-labelledby="pvh">
+  <div class="screen">
+    <button class="x" data-close aria-label="Закрыть"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    <b id="pvh" data-t="pvh">Конфиденциальность</b>
+    <p data-t="pv1">Сайт не собирает имена, почту и другие контактные данные.</p>
+    <p data-t="pv2">С вашего согласия включается Яндекс Метрика (ООО «Яндекс», данные хранятся в России). Она ставит cookie и получает технические данные: IP-адрес, тип устройства и браузера, просмотренные разделы и клики, источник перехода. Это нужно, чтобы понимать, сколько людей заходит на сайт и что им интересно. Запись сессий (Вебвизор) отключена.</p>
+    <p data-t="pv3">Без согласия Метрика не загружается. Выбор можно изменить в любой момент кнопками ниже; cookie Метрики удаляются в настройках браузера.</p>
+    <p id="pvs" style="font:13px var(--mono);color:var(--pda)"></p>
+    <div class="row"><button class="btn gold" type="button" data-ck="1" data-t="cky">Принять</button><button class="btn ghost" type="button" data-ck="0" data-t="ckn">Отказаться</button></div>
   </div>
 </div>
 <div class="modal lbox" id="lbox" role="dialog" aria-modal="true" aria-label="Кадр из игры">
@@ -637,7 +657,7 @@ const $=s=>document.querySelector(s);
 let lang='ru';
 const L=o=>o[lang]??o.ru;
 
-const EN={n0:'Demo',n1:'Factions',n2:'Emission',n3:'Map',n4:'Campaign',n5:'Army',n6:'Buildings',n7:'Artifacts',music:'Music',
+const EN={pvl:'Privacy',ckt:'This site uses cookies and Yandex Metrica to count visits. Analytics turns on only with your consent.',ckm:'Details',cky:'Accept',ckn:'Decline',pvh:'Privacy',pv1:'This site does not collect names, emails or other contact details.',pv2:'With your consent, Yandex Metrica is enabled (Yandex LLC, data stored in Russia). It sets cookies and receives technical data: IP address, device and browser type, sections viewed and clicks, referral source. This helps us understand how many people visit and what interests them. Session recording (Webvisor) is off.',pv3:'Without consent Metrica is not loaded. You can change your choice at any time with the buttons below; Metrica cookies can be deleted in your browser settings.',n0:'Demo',n1:'Factions',n2:'Emission',n3:'Map',n4:'Campaign',n5:'Army',n6:'Buildings',n7:'Artifacts',music:'Music',
 tag:'Real-time strategy in the Exclusion Zone. Three factions, mutants, artifacts — and an Emission that burns everyone who failed to reach shelter.',
 facts:'Barrier campaign · 11 locations · 1v1 and 2v2 · online play',cta1:'DEMO',cta2:'Trailer',p1:'PDA · Zone network',p2:'Dityatki · 2013',until:'Demo release · December 5',emit:'WHAT\'S IN THE DEMO ↓',cu1:'days',cu2:'hours',cu3:'minutes',cu4:'seconds',
 k0:'Demo version',dh:'The first three missions and five maps — free',d1:'Barrier campaign missions: "Rookie at the Perimeter", "Signal from the Swamps", "Rassokha"',
@@ -836,6 +856,38 @@ let last=null;
 function open(s){last=document.activeElement;$(s).classList.add('on');$(s).querySelector('[data-close]').focus()}
 function closeAll(){document.querySelectorAll('.modal.on').forEach(m=>m.classList.remove('on'));if(last)last.focus()}
 $('#trl').onclick=()=>open('#modal');
+
+/* analytics: Yandex Metrica, only after consent */
+const YM=114640486;let ymOn=false;
+function ymLoad(){if(ymOn)return;ymOn=true;
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();
+  for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id='+YM,'ym');
+  ym(YM,'init',{ssr:true,clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:false,trackHash:true});
+}
+function goal(n){if(ymOn&&window.ym)ym(YM,'reachGoal',n)}
+function ckState(){let v=null;try{v=localStorage.getItem('zr-ck')}catch(e){}return v}
+function ckShow(){const v=ckState();$('#ck').hidden=v!==null;
+  $('#pvs').textContent=v==='1'?(lang==='en'?'Current choice: analytics on':'Сейчас: статистика включена'):v==='0'?(lang==='en'?'Current choice: analytics off':'Сейчас: статистика отключена'):''}
+document.addEventListener('click',e=>{
+  const c=e.target.closest('[data-ck]');
+  if(c){const v=c.dataset.ck;try{localStorage.setItem('zr-ck',v)}catch(_){}
+    if(v==='1')ymLoad();else if(ymOn){try{document.cookie.split(';').forEach(x=>{const n=x.split('=')[0].trim();if(/^_ym|^yandexuid|^yabs/.test(n))document.cookie=n+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'})}catch(_){};location.reload();return}
+    ckShow();if(c.closest('#priv'))closeAll();return}
+  if(e.target.closest('[data-priv]')||e.target.closest('#pvl')){ckShow();open('#priv');return}
+  const a=e.target.closest('a,button');if(!a)return;
+  const h=a.getAttribute('href')||'';
+  if(h.includes('instagram.com'))goal('instagram');
+  else if(h==='#specs')goal('specs');
+  else if(h==='#demo')goal('cta_demo');
+  else if(a.id==='trl')goal('trailer');
+  else if(a.id==='lang')goal('lang');
+  else if(a.id==='snd')goal('music');
+  else if(a.dataset.i!==undefined)goal('map_point');
+  else if(a.dataset.g!==undefined)goal('gallery');
+  else if(a.dataset.tab!==undefined)goal('army_tab');
+});
+if(ckState()==='1')ymLoad();ckShow();
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
 
 
