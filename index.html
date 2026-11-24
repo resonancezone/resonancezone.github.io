@@ -401,7 +401,7 @@ background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transpar
     <div class="pda" aria-live="polite">
       <i></i><i></i><i></i><i></i>
       <div class="r"><span data-t="p1">КПК · сеть Зоны</span><span data-t="p2">Дитятки · 2013</span></div>
-      <div class="kick" style="margin:6px 0 10px" data-t="until">До выхода демо · 1 декабря</div>
+      <div class="kick" style="margin:6px 0 10px" data-t="until">До выхода демо · 5 декабря</div>
       <div class="cdg" id="cd" role="timer" aria-label="Время до выхода демо"><div><b id="cdd">--</b><span data-t="cu1">дней</span></div><div><b id="cdh">--</b><span data-t="cu2">часов</span></div><div><b id="cdm">--</b><span data-t="cu3">минут</span></div><div><b id="cds">--</b><span data-t="cu4">секунд</span></div></div>
       <a class="emit" href="#demo" data-t="emit">ЧТО БУДЕТ В ДЕМО ↓</a>
     </div>
@@ -422,7 +422,7 @@ background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transpar
         <li><b>3</b><span data-t="d3">играбельные фракции, мутанты, аномалии, 14 артефактов и Выброс</span></li>
         <li><b>3</b><span data-t="d4">типа партии — Сражение, Превосходство, Опорный пункт — и события Зоны</span></li>
       </ul>
-      <div class="ctas"><button class="btn gold" disabled data-t="dl">Демо — 1 декабря</button><a class="btn ghost" href="https://www.instagram.com/resonancezone/" data-t="dn">Узнать о выходе</a></div>
+      <div class="ctas"><button class="btn gold" disabled data-t="dl">Демо — 5 декабря</button><a class="btn ghost" href="https://www.instagram.com/resonancezone/" data-t="dn">Узнать о выходе</a></div>
       <div class="note"><span data-t="dnote">Windows · сетевая игра в демо — в разработке</span> · <a href="#specs" data-t="dspec">системные требования ↓</a></div>
     </div>
     <div class="shot"><img src="img/g_dolg_base_full.webp" alt="Кадр из демо: база Заслона с интерфейсом игры" loading="lazy" width="1600" height="900"><span data-t="ingame">кадр из игры</span></div>
@@ -639,10 +639,10 @@ const L=o=>o[lang]??o.ru;
 
 const EN={n0:'Demo',n1:'Factions',n2:'Emission',n3:'Map',n4:'Campaign',n5:'Army',n6:'Buildings',n7:'Artifacts',music:'Music',
 tag:'Real-time strategy in the Exclusion Zone. Three factions, mutants, artifacts — and an Emission that burns everyone who failed to reach shelter.',
-facts:'Barrier campaign · 11 locations · 1v1 and 2v2 · online play',cta1:'DEMO',cta2:'Trailer',p1:'PDA · Zone network',p2:'Dityatki · 2013',until:'Demo release · December 1',emit:'WHAT\'S IN THE DEMO ↓',cu1:'days',cu2:'hours',cu3:'minutes',cu4:'seconds',
+facts:'Barrier campaign · 11 locations · 1v1 and 2v2 · online play',cta1:'DEMO',cta2:'Trailer',p1:'PDA · Zone network',p2:'Dityatki · 2013',until:'Demo release · December 5',emit:'WHAT\'S IN THE DEMO ↓',cu1:'days',cu2:'hours',cu3:'minutes',cu4:'seconds',
 k0:'Demo version',dh:'The first three missions and five maps — free',d1:'Barrier campaign missions: "Rookie at the Perimeter", "Signal from the Swamps", "Rassokha"',
 d2:'maps for skirmish against the computer',d3:'playable factions, mutants, anomalies, 14 artifacts and the Emission',l_dit:'Dityatki',l_poy:'Pripyat floodplain',l_ras:'Rassokha',l_chi:'Chistogalovka',l_kop:'Kopachi',
-dl:'Demo — December 1',dn:'Get notified',dnote:'Windows · online play in the demo is in development',dspec:'system requirements ↓',ingame:'in-game shot',
+dl:'Demo — December 5',dn:'Get notified',dnote:'Windows · online play in the demo is in development',dspec:'system requirements ↓',ingame:'in-game shot',
 k1:'Factions',fh:'Three forces. One Zone.',fq:'The Barrier sees the Zone as a plague. Freehold — as a gift. The Bellringers — as a shrine.',
 za:'BARRIER',zd:'Soldiers of the Perimeter. Formation, armour and heavy vehicles. Their job is to make sure nothing leaves the Zone. In the campaign they are led by Captain Gromov "Flint".',zp:'Discipline: 5+ soldiers close together take 15% less damage',
 vo:'FREEHOLD',vd:'Free stalkers with their own laws and their own truth about the Zone. Fast, resourceful, deadly from ambush. Veter is one of them.',vp:'Economy: Freehold diggers gather loot faster',
@@ -822,7 +822,7 @@ $('#snd').onclick=()=>{soundOn=!soundOn;$('#snd').classList.toggle('on',soundOn)
   if(soundOn){if(!mus.src)mus.src=TR[ti];mus.play().catch(()=>{soundOn=false;$('#snd').classList.remove('on')})}else mus.pause()};
 
 /* countdown to demo */
-const REL=Date.parse('2026-12-01T00:00:00+03:00');let tipI=0;
+const REL=Date.parse('2026-12-05T00:00:00+03:00');let tipI=0;
 function tip(){}
 const pad=n=>String(n).padStart(2,'0');
 function tick(){const d=Math.max(0,Math.floor((REL-Date.now())/1000));
