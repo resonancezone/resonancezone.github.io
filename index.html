@@ -117,7 +117,8 @@ nav.top a{font:14px var(--mono);color:var(--soft);text-decoration:none;padding:1
 /* map */
 .mapgrid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;margin-top:40px}
 .map{position:relative;aspect-ratio:4/3;background:#0a0d09;border:1px solid var(--gline);overflow:hidden}
-.map svg{position:absolute;inset:0;width:100%;height:100%}
+.map svg,.map .mapimg{position:absolute;inset:0;width:100%;height:100%}.map .mapimg{object-fit:cover}
+.maplbl text{font-family:var(--mono);fill:#a9bba4;paint-order:stroke;stroke:#05070499;stroke-width:6px;letter-spacing:.08em}.maplbl .w{fill:#7fb2c2;font-style:italic}.maplbl .z{fill:#9dbb92;font-size:26px}.maplbl .r{fill:#e08a5e;font-size:26px}.maplbl .b{fill:#c96a6a;font-size:30px;letter-spacing:.3em}
 .pt{position:absolute;transform:translate(-22px,-22px);display:flex;align-items:center;gap:6px;min-height:44px;padding:0 4px 0 15px;background:none;border:0;cursor:pointer;color:#b4c9ae;font:13px var(--mono);white-space:nowrap;text-shadow:0 1px 3px #000}
 .pt::before{content:"";flex:none;width:10px;height:10px;border:2px solid var(--pda);background:#0a0d09}
 .pt.dm::before{border-color:var(--gold2)}
@@ -494,16 +495,10 @@ background:repeating-linear-gradient(135deg,rgba(212,172,28,.07) 0 14px,transpar
     <div class="mapgrid">
       <div>
         <div class="map" id="mapbox">
-          <svg viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
-            <defs><pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0v20" fill="none" stroke="#18241a" stroke-width=".6"/></pattern>
-            <radialGradient id="hot" cx="58%" cy="34%" r="30%"><stop offset="0" stop-color="#5a1d12" stop-opacity=".55"/><stop offset="1" stop-color="#5a1d12" stop-opacity="0"/></radialGradient></defs>
-            <rect width="400" height="300" fill="url(#g)"/><rect width="400" height="300" fill="url(#hot)"/>
-            <path d="M330 0c-10 40-30 70-15 100s5 70-15 100-10 60-10 100" fill="none" stroke="#1d3943" stroke-width="7"/>
-            <ellipse cx="236" cy="110" rx="150" ry="112" fill="none" stroke="#3a5a3a" stroke-dasharray="6 5"/>
-            <ellipse cx="236" cy="105" rx="70" ry="52" fill="none" stroke="#7a3a22" stroke-dasharray="3 4"/>
-          </svg>
+          <img class="mapimg" src="img/zone_map.webp" alt="" width="1600" height="1200" loading="lazy">
+          <svg class="maplbl" viewBox="0 0 1600 1200" preserveAspectRatio="none" aria-hidden="true" id="maplbl"></svg>
         </div>
-        <div class="legend"><span><s class="g"></s><span data-t="lg1">есть в демо</span></span><span><s></s><span data-t="lg2">в разработке</span></span><span data-t="lg3">схема условная</span></div>
+        <div class="legend"><span><s class="g"></s><span data-t="lg1">есть в демо</span></span><span><s></s><span data-t="lg2">в разработке</span></span><span data-t="lg3">центр карты увеличен для наглядности</span></div>
         <div class="loclist" id="loclist"></div>
       </div>
       <aside class="side" aria-live="polite">
@@ -671,7 +666,7 @@ k2:'Emission',eh:'The sky turns red. Whoever is outside is dead.',el:'The main e
 cb1:'a minute before',cb2:'Emission',aft:'After: whoever didn\'t make it is still lying in the open. Shots taken in the demo.',
 t1:'9:00',t1d:'the first Emission. Then every 7 minutes (more often, rarer or off).',t2:'−0:30',t2d:'siren and warning. Get your people into a bunker, cellar or building — each has its own capacity.',
 t3:'0:30',t3d:'the wave sweeps the map. Helicopters land and wait it out, infantry in the open dies.',t4:'after',t4d:'the anomalies shift and new artifacts appear. Whoever gets there first gets stronger.',
-k3:'PDA · Zone map',mh:'11 locations — from Dityatki to the sarcophagus',lg1:'in the demo',lg2:'in development',lg3:'schematic map',
+k3:'PDA · Zone map',mh:'11 locations — from Dityatki to the sarcophagus',lg1:'in the demo',lg2:'in development',lg3:'the centre of the map is enlarged for clarity',
 k4:'Campaign · PDA records',ch:'The secret of the "Resonator"',dos:'Personnel file',gr:'Captain Gromov "Flint"',grd:'Dityatki, 2013. After the Emission, contact with the Barrier checkpoint was lost. Gromov leads his squad to take over whatever is left of the post.',
 grd2:'Raise a base at the Perimeter, cross the floodplain swamps and the dump, recover Ded\'s documents and pick up the trail of the "Resonator" — the reason Freehold and the Bellringers push deep into the Zone.',
 crew:'Sergeant Lis · Warrant Officer Ded · Lieutenant Berkut · Veter (Freehold) · "Voice from the bunker" (Bellringers)',
@@ -697,17 +692,17 @@ tips:['The detector beeps — so there\'s an anomaly or an artifact nearby. Or b
 out:'The demo is out!',warn:'Warning! Emission incoming — everyone to shelter.'}};
 
 const P=[
-{id:'pripyat',ru:'Припять',en:'Pripyat',x:60,y:14,d:{ru:'Стадион на севере, площадь с гостиницей «Полесье» и ДК «Энергетик» в центре, проспект на юге.',en:'A stadium in the north, the square with the Polissya hotel and the Energetik palace of culture in the centre, an avenue in the south.'}},
-{id:'amber',ru:'Янов',en:'Yanov',x:72,y:22,m:6,d:{ru:'Завод на севере, озеро и бункер учёных в низине, дорога по восточной кромке.',en:'A factory in the north, a lake and a scientists\' bunker in the lowland, a road along the eastern edge.'}},
-{id:'chernobyl',ru:'ЧАЭС',en:'ChNPP',x:57,y:31,m:7,d:{ru:'Станция: главный корпус с 4-м блоком и машзалом, промзона, ж/д ветки, сухие каналы охлаждения.',en:'The plant: the main building with Unit 4 and the turbine hall, an industrial zone, rail lines, dry cooling channels.'}},
-{id:'darkvalley',ru:'Чистогаловка',en:'Chistogalovka',x:38,y:28,demo:1,v2:1,d:{ru:'Село на холме с церковью и кладбищем, река с мостами на востоке, ферма «Заря» на севере, МТС и ставок на юге.',en:'A hilltop village with a church and a cemetery, a river with bridges in the east, the Zarya farm in the north, a machine station and a pond in the south.'}},
-{id:'swamps',ru:'Припятская пойма',en:'Pripyat floodplain',x:74,y:43,m:2,demo:1,d:{ru:'Топи и камыши, технику держат только гати. Базы — на западе и востоке, рыбацкие хутора.',en:'Bogs and reeds; only log roads hold vehicles. Bases in the west and east, fishing farmsteads.'}},
-{id:'agroprom',ru:'Копачи',en:'Kopachi',x:57,y:44,m:5,demo:1,d:{ru:'Густые леса вокруг заброшенного НИИ: корпуса института в кольце дорог, военная часть с вертолётной площадкой на востоке. Карта большая.',en:'Dense forest around an abandoned institute in a ring of roads, a military unit with a helipad in the east. A big map.'}},
-{id:'radar',ru:'«Дуга»',en:'"Duga"',x:16,y:40,d:{ru:'Г-образная карта: антенное поле «Дуги», военная база и дорога на западе, лесистый овраг с упавшим вертолётом.',en:'An L-shaped map: the Duga antenna field, a military base and a road in the west, a wooded ravine with a crashed helicopter.'}},
-{id:'ammo',ru:'Лелёв',en:'Lelev',x:57,y:58,m:4,d:{ru:'Военная база со складами на юго-востоке, деревня на западе, хутор у пруда на северо-востоке, скалы и озёра по краям.',en:'A military base with warehouses in the south-east, a village in the west, a farmstead by a pond in the north-east.'}},
-{id:'dump',ru:'Рассоха',en:'Rassokha',x:30,y:64,m:3,demo:1,v2:1,d:{ru:'Кладбище техники: горы хлама, депо, вагоны и вышки, ряды брошенных машин. Леса почти нет. Базы на юге и севере.',en:'A vehicle graveyard: heaps of scrap, a depot, wagons and towers, rows of abandoned machines. Almost no forest.'}},
-{id:'limansk',ru:'Чернобыль',en:'Chernobyl',x:70,y:72,d:{ru:'Город-призрак: 16 кварталов пятиэтажек, дворы и парк с колесом. Базы на западе и востоке, бои за каждый дом.',en:'Ghost town: 16 blocks of five-storey buildings, courtyards and a park with a Ferris wheel. A fight for every house.'}},
-{id:'cordon',ru:'Дитятки',en:'Dityatki',x:45,y:89,m:1,demo:1,d:{ru:'Холмы, перелески и деревня на перекрёстке. Базы — в противоположных углах, много дорог.',en:'Hills, copses and a village at a crossroads. Bases in opposite corners, many roads.'}}];
+{id:'pripyat',ru:'Припять',en:'Pripyat',x:34,y:20,d:{ru:'Стадион на севере, площадь с гостиницей «Полесье» и ДК «Энергетик» в центре, проспект на юге.',en:'A stadium in the north, the square with the Polissya hotel and the Energetik palace of culture in the centre, an avenue in the south.'}},
+{id:'amber',ru:'Янов',en:'Yanov',x:45.5,y:23.5,m:6,d:{ru:'Завод на севере, озеро и бункер учёных в низине, дорога по восточной кромке.',en:'A factory in the north, a lake and a scientists\' bunker in the lowland, a road along the eastern edge.'}},
+{id:'chernobyl',ru:'ЧАЭС',en:'ChNPP',x:50.0,y:31.2,m:7,d:{ru:'Станция: главный корпус с 4-м блоком и машзалом, промзона, ж/д ветки, сухие каналы охлаждения.',en:'The plant: the main building with Unit 4 and the turbine hall, an industrial zone, rail lines, dry cooling channels.'}},
+{id:'darkvalley',ru:'Чистогаловка',en:'Chistogalovka',x:28.8,y:38.9,demo:1,v2:1,d:{ru:'Село на холме с церковью и кладбищем, река с мостами на востоке, ферма «Заря» на севере, МТС и ставок на юге.',en:'A hilltop village with a church and a cemetery, a river with bridges in the east, the Zarya farm in the north, a machine station and a pond in the south.'}},
+{id:'swamps',ru:'Припятская пойма',en:'Pripyat floodplain',x:74.9,y:47.7,m:2,demo:1,d:{ru:'Топи и камыши, технику держат только гати. Базы — на западе и востоке, рыбацкие хутора.',en:'Bogs and reeds; only log roads hold vehicles. Bases in the west and east, fishing farmsteads.'}},
+{id:'agroprom',ru:'Копачи',en:'Kopachi',x:55.3,y:50.9,m:5,demo:1,d:{ru:'Густые леса вокруг заброшенного НИИ: корпуса института в кольце дорог, военная часть с вертолётной площадкой на востоке. Карта большая.',en:'Dense forest around an abandoned institute in a ring of roads, a military unit with a helipad in the east. A big map.'}},
+{id:'radar',ru:'«Дуга»',en:'"Duga"',x:43.6,y:64.7,d:{ru:'Г-образная карта: антенное поле «Дуги», военная база и дорога на западе, лесистый овраг с упавшим вертолётом.',en:'An L-shaped map: the Duga antenna field, a military base and a road in the west, a wooded ravine with a crashed helicopter.'}},
+{id:'ammo',ru:'Лелёв',en:'Lelev',x:61.2,y:60.8,m:4,d:{ru:'Военная база со складами на юго-востоке, деревня на западе, хутор у пруда на северо-востоке, скалы и озёра по краям.',en:'A military base with warehouses in the south-east, a village in the west, a farmstead by a pond in the north-east.'}},
+{id:'dump',ru:'Рассоха',en:'Rassokha',x:33.4,y:78.1,m:3,demo:1,v2:1,d:{ru:'Кладбище техники: горы хлама, депо, вагоны и вышки, ряды брошенных машин. Леса почти нет. Базы на юге и севере.',en:'A vehicle graveyard: heaps of scrap, a depot, wagons and towers, rows of abandoned machines. Almost no forest.'}},
+{id:'limansk',ru:'Чернобыль',en:'Chernobyl',x:67.6,y:69.1,d:{ru:'Город-призрак: 16 кварталов пятиэтажек, дворы и парк с колесом. Базы на западе и востоке, бои за каждый дом.',en:'Ghost town: 16 blocks of five-storey buildings, courtyards and a park with a Ferris wheel. A fight for every house.'}},
+{id:'cordon',ru:'Дитятки',en:'Dityatki',x:56.0,y:95.0,m:1,demo:1,d:{ru:'Холмы, перелески и деревня на перекрёстке. Базы — в противоположных углах, много дорог.',en:'Hills, copses and a village at a crossroads. Bases in opposite corners, many roads.'}}];
 
 const M=[
 {ru:'Новичок у Периметра',en:'Rookie at the Perimeter',p:{ru:'Дитятки',en:'Dityatki'},d:{ru:'Поднять базу, отбиться от того, что придёт с ферм, и пережить первый Выброс.',en:'Raise a base, fight off whatever comes from the farms and survive your first Emission.'}},
@@ -778,7 +773,9 @@ document.querySelectorAll('[data-t]').forEach(e=>ruText[e.dataset.t]=e.innerHTML
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 let pick=10;
-function drawMap(){
+const ZL=[[742,175,62,'w',30,'р. Припять','Pripyat river'],[1250,960,52,'w',30,'р. Припять','Pripyat river'],[640,905,-3,'w',26,'р. Уж','Uzh river'],[990,548,62,'w',22,'пруд-охладитель','cooling pond'],[530,392,0,'',22,'Рыжий лес','Red Forest'],[1290,40,-4,'b',30,'БЕЛАРУСЬ','BELARUS'],[905,1178,0,'',22,'на Киев ↓','to Kyiv ↓'],[140,1040,-52,'z',26,'зона отчуждения · 30 км','exclusion zone · 30 km'],[452,146,-38,'r',26,'10 км','10 km']];
+function drawMapLbl(){$('#maplbl').innerHTML=ZL.map(z=>`<text x="${z[0]}" y="${z[1]}" font-size="${z[4]}" class="${z[3]}" text-anchor="middle" transform="rotate(${z[2]} ${z[0]} ${z[1]})">${lang==='en'?z[6]:z[5]}</text>`).join('')}
+function drawMap(){drawMapLbl();
   const box=$('#mapbox');box.querySelectorAll('.pt').forEach(e=>e.remove());
   box.insertAdjacentHTML('beforeend',P.map((p,i)=>`<button class="pt${p.demo?' dm':''}${i===pick?' sel':''}" style="left:${p.x}%;top:${p.y}%" data-i="${i}" aria-pressed="${i===pick}" aria-label="${esc(L(p))}"><span>${esc(L(p))}</span></button>`).join(''));
   $('#loclist').innerHTML=P.map((p,i)=>`<button data-i="${i}" aria-pressed="${i===pick}">${esc(L(p))}</button>`).join('');
